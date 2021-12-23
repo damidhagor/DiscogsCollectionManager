@@ -1,6 +1,8 @@
-﻿using System.Net;
+﻿using System.Text.Json;
+using System.Net;
 using Discogs.Client.Exceptions;
 using Discogs.Client.OAuth;
+using Discogs.Client.Contract;
 
 namespace Discogs.Client;
 
@@ -34,8 +36,11 @@ public class DiscogsClient : IDisposable
 
 
 
-    public async Task<string> GetIdentity(CancellationToken cancellationToken)
+    public async Task<Identity?> GetIdentity(CancellationToken cancellationToken)
     {
+        if (!IsAuthorized)
+            throw new UnauthorizedDiscogsException();
+
         using var request = _oauthSession.CreateAuthorizedRequest(HttpMethod.Get, DiscogApiUrls.OAuthIdentityUrl);
         using var response = await _httpClient.SendAsync(request, cancellationToken);
 
@@ -43,7 +48,10 @@ public class DiscogsClient : IDisposable
             throw new UnauthorizedDiscogsException();
 
         var content = await response.Content.ReadAsStringAsync(cancellationToken);
-        return content;
+
+        var identity = JsonSerializer.Deserialize<Identity>(content);
+
+        return identity;
     }
 
 

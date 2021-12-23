@@ -40,7 +40,7 @@ public partial class MainWindow : Window
             if (success)
             {
                 var identity = await discogsClient.GetIdentity(cancellationToken);
-                MessageBox.Show(this, $"Logged in successfully!{Environment.NewLine}{Environment.NewLine}{identity}", "Login");
+                MessageBox.Show(this, $"Logged in successfully as {identity?.Username}!", "Login");
             }
             else
             {
