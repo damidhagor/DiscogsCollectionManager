@@ -14,13 +14,18 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using Discogs.Client;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
 
 namespace DiscogsCollectionManager;
 
 public partial class MainWindow : Window
 {
-    public MainWindow()
+    private readonly IConfiguration _configuration;
+
+    public MainWindow(IConfiguration configuration)
     {
+        _configuration = configuration;
         InitializeComponent();
     }
 
@@ -33,13 +38,17 @@ public partial class MainWindow : Window
 
     private async Task LoginAsync(CancellationToken cancellationToken)
     {
-        using (var discogsClient = new DiscogsClient("MusicLibraryManager/1.0.0", "gPLATgUwWxszQAMSVxXC", "zBMFwTzSYXNyMZPMYCxWoVeNaCYVrlbM"))
+        var consumerKey = _configuration.GetValue<string>("ApiSettings:ConsumerKey");
+        var consumerSecret = _configuration.GetValue<string>("ApiSettings:ConsumerSecret");
+
+        using (var discogsClient = new DiscogsClient("MusicLibraryManager/1.0.0", consumerKey, consumerSecret))
         {
             var success = await discogsClient.AuthorizeAsync("http://musiclibrarymanager/oauth_result", GetUserVerification, cancellationToken);
 
             if (success)
             {
                 var identity = await discogsClient.GetIdentity(cancellationToken);
+                var user = await discogsClient.GetUser(identity?.Username, cancellationToken);
                 MessageBox.Show(this, $"Logged in successfully as {identity?.Username}!", "Login");
             }
             else

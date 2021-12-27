@@ -54,6 +54,26 @@ public class DiscogsClient : IDisposable
         return identity;
     }
 
+    public async Task<User?> GetUser(string username, CancellationToken cancellationToken)
+    {
+        if (!IsAuthorized)
+            throw new UnauthorizedDiscogsException();
+        if (String.IsNullOrWhiteSpace(username))
+            throw new ArgumentException(nameof(username));
+
+        using var request = _oauthSession.CreateAuthorizedRequest(HttpMethod.Get, String.Format(DiscogApiUrls.UsersUrl, username));
+        using var response = await _httpClient.SendAsync(request, cancellationToken);
+
+        if (response.StatusCode == HttpStatusCode.Unauthorized)
+            throw new UnauthorizedDiscogsException();
+
+        var content = await response.Content.ReadAsStringAsync(cancellationToken);
+
+        var user = JsonSerializer.Deserialize<User>(content);
+
+        return user;
+    }
+
 
     public void Dispose()
     {
