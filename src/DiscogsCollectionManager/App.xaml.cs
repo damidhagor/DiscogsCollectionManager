@@ -7,9 +7,12 @@ using System.Threading.Tasks;
 using System.Windows;
 using DiscogsCollectionManager.Api;
 using DiscogsCollectionManager.Settings;
+using DiscogsCollectionManager.Utils;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Serilog;
+using Serilog.Sinks.File;
 
 namespace DiscogsCollectionManager;
 
@@ -20,6 +23,13 @@ public partial class App : Application
 
     public App()
     {
+        IPathProvider pathProvider = new PathProvider();
+
+        Log.Logger = new LoggerConfiguration()
+            .Enrich.FromLogContext()
+            .WriteTo.File(pathProvider.LogFilePath)
+            .CreateLogger();
+
         _host = new HostBuilder()
             .ConfigureAppConfiguration((context, builder) =>
             {
@@ -29,11 +39,15 @@ public partial class App : Application
             })
             .ConfigureServices((context, services) =>
             {
-                services.AddTransient<ISettingsPathProvider, SettingsPathProvider>();
+                services.AddSingleton(pathProvider);
                 services.AddSingleton<ISettingsProvider, Settings.SettingsProvider>();
 
                 services.AddSingleton<IDiscogsApiClient, DiscogsApiClient>();
                 services.AddSingleton<MainWindow>();
+                services.AddLogging(builder=>
+                {
+                    builder.AddSerilog();
+                });
             })
             .Build();
     }

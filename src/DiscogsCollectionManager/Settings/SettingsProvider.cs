@@ -1,32 +1,30 @@
-﻿using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
+﻿using System.IO;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
+using DiscogsCollectionManager.Utils;
 
 namespace DiscogsCollectionManager.Settings;
 
 internal class SettingsProvider : ISettingsProvider
 {
-    private readonly ISettingsPathProvider _settingsPathProvider;
+    private readonly IPathProvider _pathProvider;
 
     public bool SettingsAreLoaded { get; private set; }
 
     public Settings Settings { get; private set; }
 
-    public SettingsProvider(ISettingsPathProvider settingsPathProvider)
+    public SettingsProvider(IPathProvider pathProvider)
     {
         Settings = new Settings();
         SettingsAreLoaded = false;
-        _settingsPathProvider = settingsPathProvider;
+        _pathProvider = pathProvider;
     }
 
     public async Task<bool> SaveSettingsAsync(CancellationToken cancellationToken)
     {
-        _settingsPathProvider.EnsureSettingsFolderExists();
-        string path = _settingsPathProvider.GetSettingsFilePath();
+        _pathProvider.EnsureAppDataFolderExists();
+        string path = _pathProvider.SettingsFilePath;
 
         using (FileStream fileStream = new FileStream(path, FileMode.Create))
         {
@@ -38,8 +36,8 @@ internal class SettingsProvider : ISettingsProvider
 
     public async Task LoadSettingsAsync(CancellationToken cancellationToken)
     {
-        _settingsPathProvider.EnsureSettingsFolderExists();
-        string path = _settingsPathProvider.GetSettingsFilePath();
+        _pathProvider.EnsureAppDataFolderExists();
+        string path = _pathProvider.SettingsFilePath;
         bool settingsExist = false;
 
         try
