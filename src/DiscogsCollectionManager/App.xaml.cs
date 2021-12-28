@@ -5,6 +5,8 @@ using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
+using DiscogsCollectionManager.Api;
+using DiscogsCollectionManager.Settings;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -27,6 +29,10 @@ public partial class App : Application
             })
             .ConfigureServices((context, services) =>
             {
+                services.AddTransient<ISettingsPathProvider, SettingsPathProvider>();
+                services.AddSingleton<ISettingsProvider, Settings.SettingsProvider>();
+
+                services.AddSingleton<IDiscogsApiClient, DiscogsApiClient>();
                 services.AddSingleton<MainWindow>();
             })
             .Build();
@@ -35,6 +41,9 @@ public partial class App : Application
     private async void Application_Startup(object sender, StartupEventArgs e)
     {
         await _host.StartAsync();
+
+        ISettingsProvider settingsProvider = _host.Services.GetRequiredService<ISettingsProvider>();
+        await settingsProvider.LoadSettingsAsync(default);
 
         MainWindow? window = _host.Services.GetService<MainWindow>();
         window?.Show();

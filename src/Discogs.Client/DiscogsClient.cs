@@ -27,16 +27,17 @@ public class DiscogsClient : IDisposable
     }
 
 
-    public async Task<bool> AuthorizeAsync(string verifierCallbackUrl, GetVerifierCallback getVerifierCallback, CancellationToken cancellationToken)
+    public async Task<(bool success, string accessToken, string accessTokenSecret)> AuthorizeAsync(string verifierCallbackUrl, GetVerifierCallback getVerifierCallback, CancellationToken cancellationToken)
     {
-        bool result = await _oauthSession.AuthorizeAsync(verifierCallbackUrl, getVerifierCallback, cancellationToken);
+        var (accessToken, accessTokenSecret) = await _oauthSession.AuthorizeAsync(verifierCallbackUrl, getVerifierCallback, cancellationToken);
+        var success = !String.IsNullOrWhiteSpace(accessToken) && !String.IsNullOrWhiteSpace(accessTokenSecret);
 
-        return result;
+        return (success, accessToken, accessTokenSecret);
     }
 
 
 
-    public async Task<Identity?> GetIdentity(CancellationToken cancellationToken)
+    public async Task<Identity?> GetIdentityAsync(CancellationToken cancellationToken)
     {
         if (!IsAuthorized)
             throw new UnauthorizedDiscogsException();
@@ -54,7 +55,7 @@ public class DiscogsClient : IDisposable
         return identity;
     }
 
-    public async Task<User?> GetUser(string username, CancellationToken cancellationToken)
+    public async Task<User?> GetUserAsync(string username, CancellationToken cancellationToken)
     {
         if (!IsAuthorized)
             throw new UnauthorizedDiscogsException();

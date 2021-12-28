@@ -26,35 +26,38 @@ internal class OAuthSession
         _accessTokenSecret = accessTokenSecret;
     }
 
-    public async Task<bool> AuthorizeAsync(string verifierCallbackUrl, GetVerifierCallback getVerifier, CancellationToken cancellationToken)
+    public async Task<(string accessToken, string accessTokenSecret)> AuthorizeAsync(string verifierCallbackUrl, GetVerifierCallback getVerifier, CancellationToken cancellationToken)
     {
-        using var httpClient = new HttpClient();
-        httpClient.DefaultRequestHeaders.UserAgent.ParseAdd(_userAgent);
+        if (String.IsNullOrWhiteSpace(_accessToken) || String.IsNullOrWhiteSpace(_accessTokenSecret))
+        {
+            using var httpClient = new HttpClient();
+            httpClient.DefaultRequestHeaders.UserAgent.ParseAdd(_userAgent);
 
-        _accessToken = "";
-        _accessTokenSecret = "";
+            _accessToken = "";
+            _accessTokenSecret = "";
 
-        if (String.IsNullOrWhiteSpace(_consumerKey) && String.IsNullOrWhiteSpace(_consumerSecret))
-            throw new InvalidOperationException("No consumer token or secret provided.");
+            if (String.IsNullOrWhiteSpace(_consumerKey) && String.IsNullOrWhiteSpace(_consumerSecret))
+                throw new InvalidOperationException("No consumer token or secret provided.");
 
-        var (requestToken, requestTokenSecret) = await GetRequestToken(httpClient, verifierCallbackUrl, cancellationToken);
-        if (String.IsNullOrWhiteSpace(requestToken) || String.IsNullOrWhiteSpace(requestTokenSecret))
-            return false;
-
-
-        var verifier = await GetVerifier(requestToken, verifierCallbackUrl, getVerifier, cancellationToken);
-        if (String.IsNullOrWhiteSpace(verifier))
-            return false;
+            var (requestToken, requestTokenSecret) = await GetRequestToken(httpClient, verifierCallbackUrl, cancellationToken);
+            if (String.IsNullOrWhiteSpace(requestToken) || String.IsNullOrWhiteSpace(requestTokenSecret))
+                return ("", "");
 
 
-        var (accessToken, accessTokenSecret) = await GetAccessToken(httpClient, requestToken, requestTokenSecret, verifier, cancellationToken);
-        if (String.IsNullOrWhiteSpace(accessToken) || String.IsNullOrWhiteSpace(accessTokenSecret))
-            return false;
+            var verifier = await GetVerifier(requestToken, verifierCallbackUrl, getVerifier, cancellationToken);
+            if (String.IsNullOrWhiteSpace(verifier))
+                return ("", "");
 
-        _accessToken = accessToken;
-        _accessTokenSecret = accessTokenSecret;
 
-        return true;
+            var (accessToken, accessTokenSecret) = await GetAccessToken(httpClient, requestToken, requestTokenSecret, verifier, cancellationToken);
+            if (String.IsNullOrWhiteSpace(accessToken) || String.IsNullOrWhiteSpace(accessTokenSecret))
+                return ("", "");
+
+            _accessToken = accessToken;
+            _accessTokenSecret = accessTokenSecret;
+        }
+
+        return (_accessToken, _accessTokenSecret);
     }
 
     public HttpRequestMessage CreateAuthorizedRequest(HttpMethod httpMethod, string url)

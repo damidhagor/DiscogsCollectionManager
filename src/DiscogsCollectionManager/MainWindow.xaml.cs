@@ -14,6 +14,8 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using Discogs.Client;
+using DiscogsCollectionManager.Api;
+using DiscogsCollectionManager.Settings;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 
@@ -21,11 +23,12 @@ namespace DiscogsCollectionManager;
 
 public partial class MainWindow : Window
 {
-    private readonly IConfiguration _configuration;
+    private readonly IDiscogsApiClient _discogsApiClient;
 
-    public MainWindow(IConfiguration configuration)
+    public MainWindow(IDiscogsApiClient discogsApiClient)
     {
-        _configuration = configuration;
+        _discogsApiClient = discogsApiClient;
+
         InitializeComponent();
     }
 
@@ -38,23 +41,17 @@ public partial class MainWindow : Window
 
     private async Task LoginAsync(CancellationToken cancellationToken)
     {
-        var consumerKey = _configuration.GetValue<string>("ApiSettings:ConsumerKey");
-        var consumerSecret = _configuration.GetValue<string>("ApiSettings:ConsumerSecret");
+        var success = await _discogsApiClient.AuthorizeAsync("http://musiclibrarymanager/oauth_result", GetUserVerification, cancellationToken);
 
-        using (var discogsClient = new DiscogsClient("MusicLibraryManager/1.0.0", consumerKey, consumerSecret))
+        if (success)
         {
-            var success = await discogsClient.AuthorizeAsync("http://musiclibrarymanager/oauth_result", GetUserVerification, cancellationToken);
-
-            if (success)
-            {
-                var identity = await discogsClient.GetIdentity(cancellationToken);
-                var user = await discogsClient.GetUser(identity?.Username, cancellationToken);
-                MessageBox.Show(this, $"Logged in successfully as {identity?.Username}!", "Login");
-            }
-            else
-            {
-                MessageBox.Show(this, "Login failed!", "Login");
-            }
+            var identity = await _discogsApiClient.GetIdentityAsync(cancellationToken);
+            var user = await _discogsApiClient.GetUserAsync(identity?.Username, cancellationToken);
+            MessageBox.Show(this, $"Logged in successfully as {identity?.Username}!", "Login");
+        }
+        else
+        {
+            MessageBox.Show(this, "Login failed!", "Login");
         }
     }
 
