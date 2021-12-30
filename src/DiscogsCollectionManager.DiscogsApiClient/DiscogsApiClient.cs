@@ -39,7 +39,7 @@ public class DiscogsApiClient : IDisposable
 
 
 
-    public async Task<Identity?> GetIdentityAsync(CancellationToken cancellationToken)
+    public async Task<Identity> GetIdentityAsync(CancellationToken cancellationToken)
     {
         if (!IsAuthorized)
             throw new UnauthorizedDiscogsException();
@@ -57,7 +57,7 @@ public class DiscogsApiClient : IDisposable
         return identity;
     }
 
-    public async Task<User?> GetUserAsync(string username, CancellationToken cancellationToken)
+    public async Task<User> GetUserAsync(string username, CancellationToken cancellationToken)
     {
         if (!IsAuthorized)
             throw new UnauthorizedDiscogsException();
