@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace DiscogsCollectionManager.Settings;
+namespace DiscogsCollectionManager.WPF.Settings;
 
 public interface ISettingsProvider
 {

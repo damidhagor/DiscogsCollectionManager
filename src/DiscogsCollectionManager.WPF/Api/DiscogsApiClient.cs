@@ -7,10 +7,11 @@ using System.Threading.Tasks;
 using Discogs.Client;
 using Discogs.Client.Contract;
 using Discogs.Client.OAuth;
-using DiscogsCollectionManager.Settings;
+using DiscogsCollectionManager.WPF.Services;
+using DiscogsCollectionManager.WPF.Settings;
 using Microsoft.Extensions.Configuration;
 
-namespace DiscogsCollectionManager.Api;
+namespace DiscogsCollectionManager.WPF.Api;
 
 public class DiscogsApiClient : IDiscogsApiClient, IDisposable
 {

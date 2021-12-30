@@ -1,4 +1,4 @@
-﻿namespace DiscogsCollectionManager.Settings;
+﻿namespace DiscogsCollectionManager.WPF.Settings;
 
 public class Settings
 {

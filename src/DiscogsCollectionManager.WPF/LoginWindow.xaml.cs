@@ -3,7 +3,7 @@ using System.Windows;
 using System.Windows.Navigation;
 using Microsoft.Web.WebView2.Core;
 
-namespace DiscogsCollectionManager;
+namespace DiscogsCollectionManager.WPF;
 
 public partial class LoginWindow : Window
 {

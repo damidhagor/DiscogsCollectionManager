@@ -1,4 +1,4 @@
-﻿namespace DiscogsCollectionManager.Utils;
+﻿namespace DiscogsCollectionManager.WPF.Utils;
 
 internal interface IPathProvider
 {

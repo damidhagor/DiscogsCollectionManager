@@ -1,4 +1,4 @@
-﻿<Window x:Class="DiscogsCollectionManager.LoginWindow"
+﻿<Window x:Class="DiscogsCollectionManager.WPF.LoginWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:webview="clr-namespace:Microsoft.Web.WebView2.Wpf;assembly=Microsoft.Web.WebView2.Wpf"

@@ -2,9 +2,9 @@
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
-using DiscogsCollectionManager.Utils;
+using DiscogsCollectionManager.WPF.Utils;
 
-namespace DiscogsCollectionManager.Settings;
+namespace DiscogsCollectionManager.WPF.Settings;
 
 internal class SettingsProvider : ISettingsProvider
 {

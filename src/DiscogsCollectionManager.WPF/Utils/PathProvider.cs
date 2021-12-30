@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO;
 
-namespace DiscogsCollectionManager.Utils;
+namespace DiscogsCollectionManager.WPF.Utils;
 
 internal class PathProvider : IPathProvider
 {

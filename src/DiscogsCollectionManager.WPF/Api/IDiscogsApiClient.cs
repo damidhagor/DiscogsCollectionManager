@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using Discogs.Client.Contract;
 using Discogs.Client.OAuth;
 
-namespace DiscogsCollectionManager.Api;
+namespace DiscogsCollectionManager.WPF.Api;
 
 public interface IDiscogsApiClient
 {
