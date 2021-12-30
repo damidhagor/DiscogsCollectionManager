@@ -1,114 +1,80 @@
-﻿using System.Text.Json.Serialization;
+﻿namespace DiscogsCollectionManager.DiscogsApiClient.Contract;
 
-namespace DiscogsCollectionManager.DiscogsApiClient.Contract;
-
-public class User
+/**
 {
-    [JsonPropertyName("id")]
-    public int Id { get; set; }
-
-    [JsonPropertyName("resource_url")]
-    public string ResourceUrl { get; set; }
-
-    [JsonPropertyName("uri")]
-    public string Uri { get; set; }
-
-    [JsonPropertyName("username")]
-    public string Username { get; set; }
-
-    [JsonPropertyName("name")]
-    public string Name { get; set; }
-
-    [JsonPropertyName("home_page")]
-    public string HomePage { get; set; }
-
-    [JsonPropertyName("location")]
-    public string Location { get; set; }
-
-    [JsonPropertyName("profile")]
-    public string Profile { get; set; }
-
-    [JsonPropertyName("registered")]
-    public DateTime Registered { get; set; }
-
-    [JsonPropertyName("rank")]
-    public float Rank { get; set; }
-
-    [JsonPropertyName("num_pending")]
-    public int NumPending { get; set; }
-
-    [JsonPropertyName("num_for_sale")]
-    public int NumForSale { get; set; }
-
-    [JsonPropertyName("num_lists")]
-    public int NumLists { get; set; }
-
-    [JsonPropertyName("releases_contributed")]
-    public int ReleasesContributed { get; set; }
-
-    [JsonPropertyName("releases_rated")]
-    public int ReleasesRated { get; set; }
-
-    [JsonPropertyName("rating_avg")]
-    public float RatingAvg { get; set; }
-
-    [JsonPropertyName("inventory_url")]
-    public string InventoryUrl { get; set; }
-
-    [JsonPropertyName("collection_folders_url")]
-    public string CollectionFoldersUrl { get; set; }
-
-    [JsonPropertyName("collection_fields_url")]
-    public string CollectionFieldsUrl { get; set; }
-
-    [JsonPropertyName("wantlist_url")]
-    public string WantlistUrl { get; set; }
-
-    [JsonPropertyName("avatar_url")]
-    public string AvatarUrl { get; set; }
-
-    [JsonPropertyName("curr_abbr")]
-    public string CurrAbbr { get; set; }
-
-    [JsonPropertyName("activated")]
-    public bool Activated { get; set; }
-
-    [JsonPropertyName("marketplace_suspended")]
-    public bool MarketplaceSuspended { get; set; }
-
-    [JsonPropertyName("banner_url")]
-    public string BannerUrl { get; set; }
-
-    [JsonPropertyName("buyer_rating")]
-    public float BuyerRating { get; set; }
-
-    [JsonPropertyName("buyer_rating_stars")]
-    public float BuyerRatingStars { get; set; }
-
-    [JsonPropertyName("buyer_num_ratings")]
-    public int BuyerNumRatings { get; set; }
-
-    [JsonPropertyName("seller_rating")]
-    public float SellerRating { get; set; }
-
-    [JsonPropertyName("seller_rating_stars")]
-    public float SellerRatingStars { get; set; }
-
-    [JsonPropertyName("seller_num_ratings")]
-    public int SellerNumRatings { get; set; }
-
-    [JsonPropertyName("is_staff")]
-    public bool IsStaff { get; set; }
-
-    [JsonPropertyName("num_collection")]
-    public int NumCollection { get; set; }
-
-    [JsonPropertyName("num_wantlist")]
-    public int NumWantlist { get; set; }
-
-    [JsonPropertyName("email")]
-    public string Email { get; set; }
-
-    [JsonPropertyName("num_unread")]
-    public int NumUnread { get; set; }
+    "id":12579295,
+    "resource_url":"https://api.discogs.com/users/DamIDhagor",
+    "uri":"https://www.discogs.com/user/DamIDhagor",
+    "username":"DamIDhagor",
+    "name":"Alexander",
+    "home_page":"",
+    "location":"",
+    "profile":"",
+    "registered":"2021-12-17T15:24:46-08:00",
+    "rank":0.0,
+    "num_pending":0,
+    "num_for_sale":0,
+    "num_lists":0,
+    "releases_contributed":0,
+    "releases_rated":0,
+    "rating_avg":0.0,
+    "inventory_url":"https://api.discogs.com/users/DamIDhagor/inventory",
+    "collection_folders_url":"https://api.discogs.com/users/DamIDhagor/collection/folders",
+    "collection_fields_url":"https://api.discogs.com/users/DamIDhagor/collection/fields",
+    "wantlist_url":"https://api.discogs.com/users/DamIDhagor/wants",
+    "avatar_url":"https://img.discogs.com/_P8NxBdy7Q7K9q5RJJXJ7cxPRIc=/500x500/filters:strip_icc():format(jpeg):quality(40)/discogs-avatars/U-12579295-1639783612.jpeg.jpg",
+    "curr_abbr":"EUR",
+    "activated":true,
+    "marketplace_suspended":false,
+    "banner_url":"",
+    "buyer_rating":0.0,
+    "buyer_rating_stars":0.0,
+    "buyer_num_ratings":0,
+    "seller_rating":0.0,
+    "seller_rating_stars":0.0,
+    "seller_num_ratings":0,
+    "is_staff":false,
+    "num_collection":12,
+    "num_wantlist":0,
+    "email":"alexander.jurk@outlook.com",
+    "num_unread":0
 }
+*/
+
+public record User(
+    int Id,
+    string ResourceUrl,
+    string Uri,
+    string Username,
+    string Name,
+    string HomePage,
+    string Location,
+    string Profile,
+    DateTime Registered,
+    float Rank,
+    int NumPending,
+    int NumForSale,
+    int NumLists,
+    int ReleasesContributed,
+    int ReleasesRated,
+    float RatingAvg,
+    string InventoryUrl,
+    string CollectionFoldersUrl,
+    string CollectionFieldsUrl,
+    string WantlistUrl,
+    string AvatarUrl,
+    string CurrAbbr,
+    bool Activated,
+    bool MarketplaceSuspended,
+    string BannerUrl,
+    float BuyerRating,
+    float BuyerRatingStars,
+    int BuyerNumRatings,
+    float SellerRating,
+    float SellerRatingStars,
+    int SellerNumRatings,
+    bool IsStaff,
+    int NumCollection,
+    int NumWantlist,
+    string Email,
+    int NumUnread);

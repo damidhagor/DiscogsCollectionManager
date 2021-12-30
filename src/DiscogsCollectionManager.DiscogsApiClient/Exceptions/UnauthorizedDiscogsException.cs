@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace DiscogsCollectionManager.DiscogsApiClient.Exceptions;
+﻿namespace DiscogsCollectionManager.DiscogsApiClient.Exceptions;
 
 public class UnauthorizedDiscogsException : Exception
 {
+    public UnauthorizedDiscogsException(string? message = null, Exception? innerException = null)
+        : base(message, innerException)
+    { }
 }

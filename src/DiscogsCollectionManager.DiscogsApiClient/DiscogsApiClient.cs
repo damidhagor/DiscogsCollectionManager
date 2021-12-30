@@ -3,6 +3,8 @@ using System.Net;
 using DiscogsCollectionManager.DiscogsApiClient.Exceptions;
 using DiscogsCollectionManager.DiscogsApiClient.OAuth;
 using DiscogsCollectionManager.DiscogsApiClient.Contract;
+using System.Globalization;
+using DiscogsCollectionManager.DiscogsApiClient.Serialization;
 
 namespace DiscogsCollectionManager.DiscogsApiClient;
 
@@ -50,7 +52,7 @@ public class DiscogsApiClient : IDisposable
 
         var content = await response.Content.ReadAsStringAsync(cancellationToken);
 
-        var identity = JsonSerializer.Deserialize<Identity>(content);
+        var identity = await response.Content.DeserializeAsJson<Identity>();
 
         return identity;
     }
@@ -68,9 +70,7 @@ public class DiscogsApiClient : IDisposable
         if (response.StatusCode == HttpStatusCode.Unauthorized)
             throw new UnauthorizedDiscogsException();
 
-        var content = await response.Content.ReadAsStringAsync(cancellationToken);
-
-        var user = JsonSerializer.Deserialize<User>(content);
+        var user = await response.Content.DeserializeAsJson<User>();
 
         return user;
     }
