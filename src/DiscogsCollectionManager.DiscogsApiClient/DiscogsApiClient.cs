@@ -1,13 +1,13 @@
 ﻿using System.Text.Json;
 using System.Net;
-using Discogs.Client.Exceptions;
-using Discogs.Client.OAuth;
-using Discogs.Client.Contract;
+using DiscogsCollectionManager.DiscogsApiClient.Exceptions;
+using DiscogsCollectionManager.DiscogsApiClient.OAuth;
+using DiscogsCollectionManager.DiscogsApiClient.Contract;
 
-namespace Discogs.Client;
+namespace DiscogsCollectionManager.DiscogsApiClient;
 
 
-public class DiscogsClient : IDisposable
+public class DiscogsApiClient : IDisposable
 {
     private readonly HttpClient _httpClient;
     private readonly OAuthSession _oauthSession;
@@ -16,7 +16,7 @@ public class DiscogsClient : IDisposable
 
     public bool IsAuthorized => _oauthSession.IsAuthorized;
 
-    public DiscogsClient(string userAgent, string consumerKey, string consumerSecret, string accessToken = "", string accessTokenSecret = "")
+    public DiscogsApiClient(string userAgent, string consumerKey, string consumerSecret, string accessToken = "", string accessTokenSecret = "")
     {
         _userAgent = userAgent;
 

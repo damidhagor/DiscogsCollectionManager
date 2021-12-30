@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace Discogs.Client.Contract;
+namespace DiscogsCollectionManager.DiscogsApiClient.Contract;
 
 /**
  {

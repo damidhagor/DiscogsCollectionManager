@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Data;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Windows;
+﻿using System.Windows;
 using DiscogsCollectionManager.WPF.Api;
 using DiscogsCollectionManager.WPF.Services;
 using DiscogsCollectionManager.WPF.Settings;
@@ -13,7 +7,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Serilog;
-using Serilog.Sinks.File;
 
 namespace DiscogsCollectionManager.WPF;
 
@@ -41,10 +34,10 @@ public partial class App : Application
             .ConfigureServices((context, services) =>
             {
                 services.AddSingleton(pathProvider);
-                services.AddSingleton<ISettingsProvider, Settings.SettingsProvider>();
+                services.AddSingleton<ISettingsProvider, SettingsProvider>();
                 services.AddSingleton(new LoggedInUserService());
 
-                services.AddSingleton<IDiscogsApiClient, DiscogsApiClient>();
+                services.AddSingleton<IDiscogsApiClient, DiscogsCollectionManager.WPF.Api.DiscogsApiClient>();
                 services.AddSingleton<MainWindow>();
                 services.AddLogging(builder =>
                 {

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Discogs.Client.Exceptions;
+namespace DiscogsCollectionManager.DiscogsApiClient.Exceptions;
 
 public class UnauthorizedDiscogsException : Exception
 {

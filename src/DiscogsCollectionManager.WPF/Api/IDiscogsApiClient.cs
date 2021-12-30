@@ -1,7 +1,7 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
-using Discogs.Client.Contract;
-using Discogs.Client.OAuth;
+using DiscogsCollectionManager.DiscogsApiClient.Contract;
+using DiscogsCollectionManager.DiscogsApiClient.OAuth;
 
 namespace DiscogsCollectionManager.WPF.Api;
 

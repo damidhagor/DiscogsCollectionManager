@@ -1,4 +1,4 @@
-﻿namespace Discogs.Client;
+﻿namespace DiscogsCollectionManager.DiscogsApiClient;
 
 internal static class DiscogApiUrls
 {

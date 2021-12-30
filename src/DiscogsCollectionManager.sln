@@ -5,7 +5,7 @@ VisualStudioVersion = 17.0.32014.148
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DiscogsCollectionManager.WPF", "DiscogsCollectionManager.WPF\DiscogsCollectionManager.WPF.csproj", "{DC6123ED-5C54-476A-897E-B7E462396869}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Discogs.Client", "Discogs.Client\Discogs.Client.csproj", "{568E75BE-B42F-43F6-BE0C-BCCEECF75A86}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DiscogsCollectionManager.DiscogsApiClient", "DiscogsCollectionManager.DiscogsApiClient\DiscogsCollectionManager.DiscogsApiClient.csproj", "{568E75BE-B42F-43F6-BE0C-BCCEECF75A86}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

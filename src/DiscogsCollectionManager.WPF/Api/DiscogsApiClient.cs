@@ -1,22 +1,18 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using Discogs.Client;
-using Discogs.Client.Contract;
-using Discogs.Client.OAuth;
-using DiscogsCollectionManager.WPF.Services;
+using DiscogsCollectionManager.DiscogsApiClient.Contract;
+using DiscogsCollectionManager.DiscogsApiClient.OAuth;
 using DiscogsCollectionManager.WPF.Settings;
 using Microsoft.Extensions.Configuration;
+using DiscogsApi = DiscogsCollectionManager.DiscogsApiClient;
 
 namespace DiscogsCollectionManager.WPF.Api;
 
 public class DiscogsApiClient : IDiscogsApiClient, IDisposable
 {
     private const string _userAgent = "MusicLibraryManager/1.0.0";
-    private readonly DiscogsClient _discogsClient;
+    private readonly DiscogsApi.DiscogsApiClient _discogsClient;
     private readonly ISettingsProvider _settingsProvider;
 
     public DiscogsApiClient(ISettingsProvider settingsProvider, IConfiguration configuration)
@@ -28,7 +24,7 @@ public class DiscogsApiClient : IDiscogsApiClient, IDisposable
         var accessToken = _settingsProvider.Settings.ApiAccessToken;
         var accessTokenSecret = _settingsProvider.Settings.ApiAccessTokenSecret;
 
-        _discogsClient = new DiscogsClient(_userAgent, consumerKey, consumerSecret, accessToken, accessTokenSecret);
+        _discogsClient = new DiscogsApi.DiscogsApiClient(_userAgent, consumerKey, consumerSecret, accessToken, accessTokenSecret);
     }
 
     public async Task<bool> AuthorizeAsync(string verifierCallbackUrl, GetVerifierCallback getVerifierCallback, CancellationToken cancellationToken)

@@ -2,7 +2,7 @@
 using System.Net.Http.Headers;
 using System.Web;
 
-namespace Discogs.Client.OAuth;
+namespace DiscogsCollectionManager.DiscogsApiClient.OAuth;
 
 public delegate Task<string> GetVerifierCallback(string authorizeUrl, string verifierCallbackUrl, CancellationToken cancellationToken);
 

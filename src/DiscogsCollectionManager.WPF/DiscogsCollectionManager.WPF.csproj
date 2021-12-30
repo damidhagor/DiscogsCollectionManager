@@ -15,7 +15,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Discogs.Client\Discogs.Client.csproj" />
+    <ProjectReference Include="..\DiscogsCollectionManager.DiscogsApiClient\DiscogsCollectionManager.DiscogsApiClient.csproj" />
   </ItemGroup>
 
   <ItemGroup>
