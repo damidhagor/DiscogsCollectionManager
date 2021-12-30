@@ -52,7 +52,7 @@ public class DiscogsApiClient : IDisposable
 
         var content = await response.Content.ReadAsStringAsync(cancellationToken);
 
-        var identity = await response.Content.DeserializeAsJson<Identity>();
+        var identity = await response.Content.DeserializeAsJsonAsync<Identity>(cancellationToken);
 
         return identity;
     }
@@ -70,7 +70,7 @@ public class DiscogsApiClient : IDisposable
         if (response.StatusCode == HttpStatusCode.Unauthorized)
             throw new UnauthorizedDiscogsException();
 
-        var user = await response.Content.DeserializeAsJson<User>();
+        var user = await response.Content.DeserializeAsJsonAsync<User>(cancellationToken);
 
         return user;
     }

@@ -11,11 +11,11 @@ internal static class SerializationExtensions
         PropertyNamingPolicy = _jsonNamingPolicy
     };
 
-    public static async Task<T> DeserializeAsJson<T>(this HttpContent httpContent)
+    public static async Task<T> DeserializeAsJsonAsync<T>(this HttpContent httpContent, CancellationToken cancellationToken)
     {
         try
         {
-            var stringContent = await httpContent.ReadAsStringAsync();
+            var stringContent = await httpContent.ReadAsStringAsync(cancellationToken);
             var result = JsonSerializer.Deserialize<T>(stringContent);
 
             return result ?? throw new SerializationDiscogsException("Deserialization returned no result.");
