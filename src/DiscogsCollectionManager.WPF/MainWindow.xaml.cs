@@ -27,6 +27,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         _log = log;
         _discogsApiClient = discogsApiClient;
         LoggedInUserService = loggedInUserService;
+
         InitializeComponent();
     }
 

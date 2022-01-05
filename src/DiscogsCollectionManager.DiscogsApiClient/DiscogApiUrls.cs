@@ -12,4 +12,5 @@ internal static class DiscogApiUrls
     public static readonly string VerifierTokenUrl = "https://discogs.com/oauth/authorize?oauth_token={0}";
 
     public static readonly string UsersUrl = $"{BaseUrl}/users/{{0}}";
+    public static readonly string CollectionFoldersUrl = $"{BaseUrl}/users/{{0}}/collection/folders";
 }

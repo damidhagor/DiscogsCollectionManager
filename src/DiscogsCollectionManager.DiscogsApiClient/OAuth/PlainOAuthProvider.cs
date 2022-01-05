@@ -4,9 +4,7 @@ using System.Web;
 
 namespace DiscogsCollectionManager.DiscogsApiClient.OAuth;
 
-public delegate Task<string> GetVerifierCallback(string authorizeUrl, string verifierCallbackUrl, CancellationToken cancellationToken);
-
-internal class OAuthSession
+public class PlainOAuthProvider : IOAuthProvider
 {
     private readonly string _userAgent;
     private readonly string _consumerKey;
@@ -17,7 +15,7 @@ internal class OAuthSession
     public bool IsAuthorized => !String.IsNullOrWhiteSpace(_accessToken) && !String.IsNullOrWhiteSpace(_accessTokenSecret);
 
 
-    public OAuthSession(string userAgent, string consumerKey, string consumerSecret, string accessToken = "", string accessTokenSecret = "")
+    public PlainOAuthProvider(string userAgent, string consumerKey, string consumerSecret, string accessToken = "", string accessTokenSecret = "")
     {
         _userAgent = userAgent;
         _consumerKey = consumerKey;

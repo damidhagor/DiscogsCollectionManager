@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using DiscogsCollectionManager.DiscogsApiClient.Contract;
@@ -24,7 +25,9 @@ public class DiscogsApiClient : IDiscogsApiClient, IDisposable
         var accessToken = _settingsProvider.Settings.ApiAccessToken;
         var accessTokenSecret = _settingsProvider.Settings.ApiAccessTokenSecret;
 
-        _discogsClient = new DiscogsApi.DiscogsApiClient(_userAgent, consumerKey, consumerSecret, accessToken, accessTokenSecret);
+        IOAuthProvider oAuthProvider = new PlainOAuthProvider(_userAgent, consumerKey, consumerSecret, accessToken, accessTokenSecret);
+
+        _discogsClient = new DiscogsApi.DiscogsApiClient(oAuthProvider, _userAgent);
     }
 
     public async Task<bool> AuthorizeAsync(string verifierCallbackUrl, GetVerifierCallback getVerifierCallback, CancellationToken cancellationToken)
@@ -47,6 +50,34 @@ public class DiscogsApiClient : IDiscogsApiClient, IDisposable
     {
         return await _discogsClient.GetUserAsync(username, cancellationToken);
     }
+
+
+    public async Task<List<CollectionFolder>> GetCollectionFoldersAsync(string username, CancellationToken cancellationToken)
+    {
+        return await _discogsClient.GetCollectionFoldersAsync(username, cancellationToken);
+    }
+
+    public async Task<CollectionFolder?> CreateCollectionFolderAsync(string username, string name, CancellationToken cancellationToken)
+    {
+        var request = new CreateCollectionFolderRequest(name);
+        return await _discogsClient.CreateCollectionFolderAsync(username, request, cancellationToken);
+    }
+
+    public async Task<CollectionFolder?> GetCollectionFolderAsync(string username, int folderId, CancellationToken cancellationToken)
+    {
+        return await _discogsClient.GetCollectionFolderAsync(username, folderId, cancellationToken);
+    }
+
+    public async Task<CollectionFolder?> UpdateCollectionFolderAsync(string username, int folderId, string name, CancellationToken cancellationToken)
+    {
+        return await _discogsClient.UpdateCollectionFolderAsync(username, folderId, new CreateCollectionFolderRequest(name), cancellationToken);
+    }
+
+    public async Task<bool> DeleteCollectionFolderAsync(string username, int folderId, CancellationToken cancellationToken)
+    {
+        return await _discogsClient.DeleteCollectionFolderAsync(username, folderId, cancellationToken);
+    }
+
 
     public void Dispose()
     {
