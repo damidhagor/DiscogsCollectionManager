@@ -1,5 +1,6 @@
 ﻿using System.Windows;
 using DiscogsCollectionManager.WPF.Api;
+using DiscogsCollectionManager.WPF.Api.Authorization;
 using DiscogsCollectionManager.WPF.Services;
 using DiscogsCollectionManager.WPF.Settings;
 using DiscogsCollectionManager.WPF.Utils;
@@ -37,6 +38,7 @@ public partial class App : Application
                 services.AddSingleton<ISettingsProvider, SettingsProvider>();
                 services.AddSingleton(new LoggedInUserService());
 
+                services.AddSingleton<IAuthorizationHandler, PlainOAuthAuthorizationHandler>();
                 services.AddSingleton<IDiscogsApiClient, DiscogsCollectionManager.WPF.Api.DiscogsApiClient>();
                 services.AddSingleton<MainWindow>();
                 services.AddLogging(builder =>

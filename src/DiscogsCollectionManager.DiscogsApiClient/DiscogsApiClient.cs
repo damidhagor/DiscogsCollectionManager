@@ -1,38 +1,34 @@
 ﻿using System.Net;
+using DiscogsCollectionManager.DiscogsApiClient.Authorization;
 using DiscogsCollectionManager.DiscogsApiClient.Contract;
 using DiscogsCollectionManager.DiscogsApiClient.Exceptions;
-using DiscogsCollectionManager.DiscogsApiClient.OAuth;
 using DiscogsCollectionManager.DiscogsApiClient.Serialization;
 
 namespace DiscogsCollectionManager.DiscogsApiClient;
 
-
-public class DiscogsApiClient : IDisposable
+public class DiscogsApiClient
 {
     private readonly HttpClient _httpClient;
-    private readonly IOAuthProvider _oAuthProvider;
+    private readonly IAuthorizationProvider _authorizationProvider;
 
     private readonly string _userAgent;
 
-    public bool IsAuthorized => _oAuthProvider.IsAuthorized;
+    public bool IsAuthorized => _authorizationProvider.IsAuthorized;
 
-    public DiscogsApiClient(IOAuthProvider oAuthProvider, string userAgent)
+    public DiscogsApiClient(IAuthorizationProvider authorizationProvider, string userAgent)
     {
         _userAgent = userAgent;
 
-        _oAuthProvider = oAuthProvider;
+        _authorizationProvider = authorizationProvider;
 
         _httpClient = new HttpClient();
         _httpClient.DefaultRequestHeaders.UserAgent.ParseAdd(_userAgent);
     }
 
-
-    public async Task<(bool success, string accessToken, string accessTokenSecret)> AuthorizeAsync(string verifierCallbackUrl, GetVerifierCallback getVerifierCallback, CancellationToken cancellationToken)
+   
+    public async Task<IAuthorizationResponse> AuthorizeAsync(IAuthorizationRequest authorizationRequest, CancellationToken cancellationToken)
     {
-        var (accessToken, accessTokenSecret) = await _oAuthProvider.AuthorizeAsync(verifierCallbackUrl, getVerifierCallback, cancellationToken);
-        var success = !String.IsNullOrWhiteSpace(accessToken) && !String.IsNullOrWhiteSpace(accessTokenSecret);
-
-        return (success, accessToken, accessTokenSecret);
+        return await _authorizationProvider.AuthorizeAsync(authorizationRequest, cancellationToken);
     }
 
 
@@ -42,7 +38,7 @@ public class DiscogsApiClient : IDisposable
         if (!IsAuthorized)
             throw new UnauthorizedDiscogsException();
 
-        using var request = _oAuthProvider.CreateAuthorizedRequest(HttpMethod.Get, DiscogApiUrls.OAuthIdentityUrl);
+        using var request = _authorizationProvider.CreateAuthorizedRequest(HttpMethod.Get, DiscogApiUrls.OAuthIdentityUrl);
         using var response = await _httpClient.SendAsync(request, cancellationToken);
 
         if (response.StatusCode == HttpStatusCode.Unauthorized)
@@ -62,7 +58,7 @@ public class DiscogsApiClient : IDisposable
         if (String.IsNullOrWhiteSpace(username))
             throw new ArgumentException(nameof(username));
 
-        using var request = _oAuthProvider.CreateAuthorizedRequest(HttpMethod.Get, String.Format(DiscogApiUrls.UsersUrl, username));
+        using var request = _authorizationProvider.CreateAuthorizedRequest(HttpMethod.Get, String.Format(DiscogApiUrls.UsersUrl, username));
         using var response = await _httpClient.SendAsync(request, cancellationToken);
 
         if (response.StatusCode == HttpStatusCode.Unauthorized)
@@ -82,7 +78,7 @@ public class DiscogsApiClient : IDisposable
         if (String.IsNullOrWhiteSpace(username))
             throw new ArgumentException(nameof(username));
 
-        using var request = _oAuthProvider.CreateAuthorizedRequest(HttpMethod.Get, String.Format(DiscogApiUrls.CollectionFoldersUrl, username));
+        using var request = _authorizationProvider.CreateAuthorizedRequest(HttpMethod.Get, String.Format(DiscogApiUrls.CollectionFoldersUrl, username));
         using var response = await _httpClient.SendAsync(request, cancellationToken);
 
         if (response.StatusCode == HttpStatusCode.Unauthorized)
@@ -100,7 +96,7 @@ public class DiscogsApiClient : IDisposable
         if (String.IsNullOrWhiteSpace(username))
             throw new ArgumentException(nameof(username));
 
-        using var request = _oAuthProvider.CreateAuthorizedRequest(HttpMethod.Get, $"{String.Format(DiscogApiUrls.CollectionFoldersUrl, username)}/{folderId}");
+        using var request = _authorizationProvider.CreateAuthorizedRequest(HttpMethod.Get, $"{String.Format(DiscogApiUrls.CollectionFoldersUrl, username)}/{folderId}");
         using var response = await _httpClient.SendAsync(request, cancellationToken);
 
         if (response.StatusCode == HttpStatusCode.Unauthorized)
@@ -120,7 +116,7 @@ public class DiscogsApiClient : IDisposable
         if (String.IsNullOrWhiteSpace(createFolderRequest.Name))
             throw new ArgumentException(nameof(createFolderRequest));
 
-        using var request = _oAuthProvider.CreateAuthorizedRequest(HttpMethod.Post, String.Format(DiscogApiUrls.CollectionFoldersUrl, username));
+        using var request = _authorizationProvider.CreateAuthorizedRequest(HttpMethod.Post, String.Format(DiscogApiUrls.CollectionFoldersUrl, username));
 
         request.Content = CreateJsonContent(createFolderRequest);
 
@@ -143,7 +139,7 @@ public class DiscogsApiClient : IDisposable
         if (String.IsNullOrWhiteSpace(createFolderRequest.Name))
             throw new ArgumentException(nameof(createFolderRequest));
 
-        using var request = _oAuthProvider.CreateAuthorizedRequest(HttpMethod.Post, $"{String.Format(DiscogApiUrls.CollectionFoldersUrl, username)}/{folderId}");
+        using var request = _authorizationProvider.CreateAuthorizedRequest(HttpMethod.Post, $"{String.Format(DiscogApiUrls.CollectionFoldersUrl, username)}/{folderId}");
 
         request.Content = CreateJsonContent(createFolderRequest);
 
@@ -162,7 +158,7 @@ public class DiscogsApiClient : IDisposable
         if (!IsAuthorized)
             throw new UnauthorizedDiscogsException();
 
-        using var request = _oAuthProvider.CreateAuthorizedRequest(HttpMethod.Delete, $"{String.Format(DiscogApiUrls.CollectionFoldersUrl, username)}/{folderId}");
+        using var request = _authorizationProvider.CreateAuthorizedRequest(HttpMethod.Delete, $"{String.Format(DiscogApiUrls.CollectionFoldersUrl, username)}/{folderId}");
         using var response = await _httpClient.SendAsync(request, cancellationToken);
 
         if (response.StatusCode == HttpStatusCode.Unauthorized)

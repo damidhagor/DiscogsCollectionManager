@@ -2,43 +2,36 @@
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using Auth = DiscogsCollectionManager.DiscogsApiClient.Authorization;
 using DiscogsCollectionManager.DiscogsApiClient.Contract;
-using DiscogsCollectionManager.DiscogsApiClient.OAuth;
+using DiscogsCollectionManager.WPF.Api.Authorization;
 using DiscogsCollectionManager.WPF.Settings;
 using Microsoft.Extensions.Configuration;
-using DiscogsApi = DiscogsCollectionManager.DiscogsApiClient;
+using GenericDiscogsApiClient = DiscogsCollectionManager.DiscogsApiClient.DiscogsApiClient;
 
 namespace DiscogsCollectionManager.WPF.Api;
 
-public class DiscogsApiClient : IDiscogsApiClient, IDisposable
+internal class DiscogsApiClient : IDiscogsApiClient, IDisposable
 {
-    private const string _userAgent = "MusicLibraryManager/1.0.0";
-    private readonly DiscogsApi.DiscogsApiClient _discogsClient;
-    private readonly ISettingsProvider _settingsProvider;
+    public static readonly string UserAgent = "MusicLibraryManager/1.0.0";
 
-    public DiscogsApiClient(ISettingsProvider settingsProvider, IConfiguration configuration)
+    private readonly GenericDiscogsApiClient _discogsClient;
+    private readonly IAuthorizationHandler _authorizationHandler;
+
+    public DiscogsApiClient(IAuthorizationHandler authorizationHandler)
     {
-        _settingsProvider = settingsProvider;
-
-        var consumerKey = configuration.GetValue<string>("ApiSettings:ConsumerKey");
-        var consumerSecret = configuration.GetValue<string>("ApiSettings:ConsumerSecret");
-        var accessToken = _settingsProvider.Settings.ApiAccessToken;
-        var accessTokenSecret = _settingsProvider.Settings.ApiAccessTokenSecret;
-
-        IOAuthProvider oAuthProvider = new PlainOAuthProvider(_userAgent, consumerKey, consumerSecret, accessToken, accessTokenSecret);
-
-        _discogsClient = new DiscogsApi.DiscogsApiClient(oAuthProvider, _userAgent);
+        _discogsClient = new GenericDiscogsApiClient(authorizationHandler.GetAuthorizationProvider(), UserAgent);
+        _authorizationHandler = authorizationHandler;
     }
 
-    public async Task<bool> AuthorizeAsync(string verifierCallbackUrl, GetVerifierCallback getVerifierCallback, CancellationToken cancellationToken)
+    public async Task<bool> AuthorizeAsync(CancellationToken cancellationToken)
     {
-        var (success, accessToken, accessTokenSecret) = await _discogsClient.AuthorizeAsync(verifierCallbackUrl, getVerifierCallback, cancellationToken);
+        var authorizationRequest = _authorizationHandler.GetAuthorizationRequest();
+        var authorizationResponse = await _discogsClient.AuthorizeAsync(authorizationRequest, cancellationToken);
 
-        _settingsProvider.Settings.ApiAccessToken = accessToken;
-        _settingsProvider.Settings.ApiAccessTokenSecret = accessTokenSecret;
-        await _settingsProvider.SaveSettingsAsync(cancellationToken);
+        await _authorizationHandler.SubmitAuthorizationResponseAsync(authorizationResponse, cancellationToken);
 
-        return success;
+        return authorizationResponse.Success;
     }
 
     public async Task<Identity?> GetIdentityAsync(CancellationToken cancellationToken)

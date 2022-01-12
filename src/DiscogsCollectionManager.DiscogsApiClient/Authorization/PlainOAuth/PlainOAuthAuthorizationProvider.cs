@@ -2,9 +2,9 @@
 using System.Net.Http.Headers;
 using System.Web;
 
-namespace DiscogsCollectionManager.DiscogsApiClient.OAuth;
+namespace DiscogsCollectionManager.DiscogsApiClient.Authorization.PlainOAuth;
 
-public class PlainOAuthProvider : IOAuthProvider
+public class PlainOAuthAuthorizationProvider : IAuthorizationProvider
 {
     private readonly string _userAgent;
     private readonly string _consumerKey;
@@ -15,7 +15,7 @@ public class PlainOAuthProvider : IOAuthProvider
     public bool IsAuthorized => !String.IsNullOrWhiteSpace(_accessToken) && !String.IsNullOrWhiteSpace(_accessTokenSecret);
 
 
-    public PlainOAuthProvider(string userAgent, string consumerKey, string consumerSecret, string accessToken = "", string accessTokenSecret = "")
+    public PlainOAuthAuthorizationProvider(string userAgent, string consumerKey, string consumerSecret, string accessToken = "", string accessTokenSecret = "")
     {
         _userAgent = userAgent;
         _consumerKey = consumerKey;
@@ -24,9 +24,10 @@ public class PlainOAuthProvider : IOAuthProvider
         _accessTokenSecret = accessTokenSecret;
     }
 
-    public async Task<(string accessToken, string accessTokenSecret)> AuthorizeAsync(string verifierCallbackUrl, GetVerifierCallback getVerifier, CancellationToken cancellationToken)
+    public async Task<IAuthorizationResponse> AuthorizeAsync(IAuthorizationRequest authorizationRequest, CancellationToken cancellationToken)
     {
-        if (String.IsNullOrWhiteSpace(_accessToken) || String.IsNullOrWhiteSpace(_accessTokenSecret))
+        if (authorizationRequest is PlainOAuthAuthorizationRequest authAuthorizationRequest
+            && (String.IsNullOrWhiteSpace(_accessToken) || String.IsNullOrWhiteSpace(_accessTokenSecret)))
         {
             using var httpClient = new HttpClient();
             httpClient.DefaultRequestHeaders.UserAgent.ParseAdd(_userAgent);
@@ -37,25 +38,25 @@ public class PlainOAuthProvider : IOAuthProvider
             if (String.IsNullOrWhiteSpace(_consumerKey) && String.IsNullOrWhiteSpace(_consumerSecret))
                 throw new InvalidOperationException("No consumer token or secret provided.");
 
-            var (requestToken, requestTokenSecret) = await GetRequestToken(httpClient, verifierCallbackUrl, cancellationToken);
+            var (requestToken, requestTokenSecret) = await GetRequestToken(httpClient, authAuthorizationRequest.VerifierCallbackUrl, cancellationToken);
             if (String.IsNullOrWhiteSpace(requestToken) || String.IsNullOrWhiteSpace(requestTokenSecret))
-                return ("", "");
+                return new PlainOAuthAuthorizationResponse("Getting request token failed.");
 
 
-            var verifier = await GetVerifier(requestToken, verifierCallbackUrl, getVerifier, cancellationToken);
+            var verifier = await GetVerifier(requestToken, authAuthorizationRequest.VerifierCallbackUrl, authAuthorizationRequest.GetVerifierCallback, cancellationToken);
             if (String.IsNullOrWhiteSpace(verifier))
-                return ("", "");
+                return new PlainOAuthAuthorizationResponse("Failed getting verifier token.");
 
 
             var (accessToken, accessTokenSecret) = await GetAccessToken(httpClient, requestToken, requestTokenSecret, verifier, cancellationToken);
             if (String.IsNullOrWhiteSpace(accessToken) || String.IsNullOrWhiteSpace(accessTokenSecret))
-                return ("", "");
+                return new PlainOAuthAuthorizationResponse("Failed getting access token.");
 
             _accessToken = accessToken;
             _accessTokenSecret = accessTokenSecret;
         }
 
-        return (_accessToken, _accessTokenSecret);
+        return new PlainOAuthAuthorizationResponse(_accessToken, _accessTokenSecret);
     }
 
     public HttpRequestMessage CreateAuthorizedRequest(HttpMethod httpMethod, string url)

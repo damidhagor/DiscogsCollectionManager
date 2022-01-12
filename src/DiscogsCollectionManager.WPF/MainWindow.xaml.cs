@@ -41,7 +41,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
     private async Task LoginAsync(CancellationToken cancellationToken)
     {
         _log.LogInformation("Logging in ...");
-        var success = await _discogsApiClient.AuthorizeAsync("http://musiclibrarymanager/oauth_result", GetUserVerification, cancellationToken);
+        var success = await _discogsApiClient.AuthorizeAsync(cancellationToken);
 
         if (success)
         {
