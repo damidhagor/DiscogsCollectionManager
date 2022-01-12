@@ -7,7 +7,7 @@ using Microsoft.Extensions.Configuration;
 
 namespace DiscogsCollectionManager.WPF.Api.Authorization;
 
-internal class PlainOAuthAuthorizationHandler : IAuthorizationHandler
+public class PlainOAuthAuthorizationHandler : IAuthorizationHandler
 {
     private const string _verifierCallbackUrl = "http://musiclibrarymanager/oauth_result";
 
