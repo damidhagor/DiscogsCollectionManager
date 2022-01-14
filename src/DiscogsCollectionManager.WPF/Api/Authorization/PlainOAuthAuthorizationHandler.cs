@@ -50,12 +50,12 @@ public class PlainOAuthAuthorizationHandler : IAuthorizationHandler
     }
 
 
-    private async Task<string> GetVerifier(string authorizeUrl, string verifierCallbackUrl, CancellationToken cancellationToken)
+    private Task<string> GetVerifier(string authorizeUrl, string verifierCallbackUrl, CancellationToken cancellationToken)
     {
-        LoginWindow loginWindow = new LoginWindow(authorizeUrl, verifierCallbackUrl);
+        var loginWindow = new LoginWindow(authorizeUrl, verifierCallbackUrl);
 
         loginWindow.ShowDialog();
 
-        return loginWindow.Result;
+        return Task.FromResult(loginWindow.Result);
     }
 }

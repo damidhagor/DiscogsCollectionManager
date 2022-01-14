@@ -10,12 +10,13 @@ public partial class LoginWindow : Window
     private readonly string _loginUrl;
     private readonly string _callbackUrl;
 
-    public string? Result { get; set; }
+    public string Result { get; set; }
 
     public LoginWindow(string loginUrl, string callbackUrl)
     {
         _loginUrl = loginUrl;
         _callbackUrl = callbackUrl;
+        Result = "";
 
         InitializeComponent();
     }
@@ -23,11 +24,11 @@ public partial class LoginWindow : Window
 
     private void Browser_Navigated(object sender, NavigationEventArgs e)
     {
-        Uri uri = e.Uri;
+        var uri = e.Uri;
 
         if (uri.AbsoluteUri.Contains("oauth_verifier"))
         {
-            Result = uri.Query.Length > 0 ? uri.Query.Substring(1) : "";
+            Result = uri.Query.Length > 0 ? uri.Query[1..] : "";
         }
     }
 
@@ -43,10 +44,7 @@ public partial class LoginWindow : Window
         {
             int index = e.Uri.IndexOf("?");
 
-            if (index > -1)
-                Result = e.Uri.Substring(index + 1);
-            else
-                Result = null;
+            Result = index > -1 ? e.Uri[(index + 1)..] : "";
 
             Close();
         }

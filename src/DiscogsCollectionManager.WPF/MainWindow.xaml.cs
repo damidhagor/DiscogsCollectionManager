@@ -12,7 +12,7 @@ namespace DiscogsCollectionManager.WPF;
 public partial class MainWindow : Window, INotifyPropertyChanged
 {
     #region INotifyPropertyChanged
-    public event PropertyChangedEventHandler PropertyChanged;
+    public event PropertyChangedEventHandler? PropertyChanged;
     private void NotifyPropertyChanged([CallerMemberName] string caller = "")
         => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(caller));
     #endregion
@@ -46,16 +46,19 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         if (success)
         {
             var identity = await _discogsApiClient.GetIdentityAsync(cancellationToken);
-            var user = await _discogsApiClient.GetUserAsync(identity?.Username, cancellationToken);
-
-            if (user != null)
+            if (identity != null)
             {
-                LoggedInUserService.SetLoggedInUser(user);
-                NotifyPropertyChanged(nameof(LoggedInUserService));
-            }
+                var user = await _discogsApiClient.GetUserAsync(identity.Username, cancellationToken);
 
-            MessageBox.Show(this, $"Logged in successfully as {identity?.Username}!", "Login");
-            _log.LogInformation("Logged in.");
+                if (user != null)
+                {
+                    LoggedInUserService.SetLoggedInUser(user);
+                    NotifyPropertyChanged(nameof(LoggedInUserService));
+                }
+
+                MessageBox.Show(this, $"Logged in successfully as {identity?.Username}!", "Login");
+                _log.LogInformation("Logged in.");
+            }
         }
         else
         {
@@ -63,24 +66,4 @@ public partial class MainWindow : Window, INotifyPropertyChanged
             MessageBox.Show(this, "Login failed!", "Login");
         }
     }
-
-    private Task<string> GetUserVerification(string loginUrl, string callbackUrl, CancellationToken cancellationToken)
-    {
-        LoginWindow loginWindow = new LoginWindow(loginUrl, callbackUrl);
-
-        loginWindow.ShowDialog();
-
-        return Task.FromResult(loginWindow.Result);
-    }
-}
-
-public class MyClass : INotifyPropertyChanged
-{
-    #region INotifyPropertyChanged
-    public event PropertyChangedEventHandler PropertyChanged;
-    private void NotifyPropertyChanged([CallerMemberName] string caller = "")
-        => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(caller));
-    #endregion
-
-
 }
