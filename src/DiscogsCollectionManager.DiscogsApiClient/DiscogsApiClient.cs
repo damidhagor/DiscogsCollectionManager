@@ -25,7 +25,7 @@ public class DiscogsApiClient
         _httpClient.DefaultRequestHeaders.UserAgent.ParseAdd(_userAgent);
     }
 
-   
+
     public async Task<IAuthorizationResponse> AuthorizeAsync(IAuthorizationRequest authorizationRequest, CancellationToken cancellationToken)
     {
         return await _authorizationProvider.AuthorizeAsync(authorizationRequest, cancellationToken);
@@ -41,10 +41,7 @@ public class DiscogsApiClient
         using var request = _authorizationProvider.CreateAuthorizedRequest(HttpMethod.Get, DiscogApiUrls.OAuthIdentityUrl);
         using var response = await _httpClient.SendAsync(request, cancellationToken);
 
-        if (response.StatusCode == HttpStatusCode.Unauthorized)
-            throw new UnauthorizedDiscogsException();
-
-        var content = await response.Content.ReadAsStringAsync(cancellationToken);
+        await response.CheckAndHandleHttpErrorCodes(cancellationToken);
 
         var identity = await response.Content.DeserializeAsJsonAsync<Identity>(cancellationToken);
 
@@ -61,8 +58,7 @@ public class DiscogsApiClient
         using var request = _authorizationProvider.CreateAuthorizedRequest(HttpMethod.Get, String.Format(DiscogApiUrls.UsersUrl, username));
         using var response = await _httpClient.SendAsync(request, cancellationToken);
 
-        if (response.StatusCode == HttpStatusCode.Unauthorized)
-            throw new UnauthorizedDiscogsException();
+        await response.CheckAndHandleHttpErrorCodes(cancellationToken);
 
         var user = await response.Content.DeserializeAsJsonAsync<User>(cancellationToken);
 
@@ -81,8 +77,7 @@ public class DiscogsApiClient
         using var request = _authorizationProvider.CreateAuthorizedRequest(HttpMethod.Get, String.Format(DiscogApiUrls.CollectionFoldersUrl, username));
         using var response = await _httpClient.SendAsync(request, cancellationToken);
 
-        if (response.StatusCode == HttpStatusCode.Unauthorized)
-            throw new UnauthorizedDiscogsException();
+        await response.CheckAndHandleHttpErrorCodes(cancellationToken);
 
         var collectionFoldersResponse = await response.Content.DeserializeAsJsonAsync<CollectionFoldersResponse>(cancellationToken);
 
@@ -99,8 +94,7 @@ public class DiscogsApiClient
         using var request = _authorizationProvider.CreateAuthorizedRequest(HttpMethod.Get, $"{String.Format(DiscogApiUrls.CollectionFoldersUrl, username)}/{folderId}");
         using var response = await _httpClient.SendAsync(request, cancellationToken);
 
-        if (response.StatusCode == HttpStatusCode.Unauthorized)
-            throw new UnauthorizedDiscogsException();
+        await response.CheckAndHandleHttpErrorCodes(cancellationToken);
 
         var collectionFolder = response.StatusCode == HttpStatusCode.OK ? await response.Content.DeserializeAsJsonAsync<CollectionFolder>(cancellationToken) : null;
 
@@ -122,8 +116,7 @@ public class DiscogsApiClient
 
         using var response = await _httpClient.SendAsync(request, cancellationToken);
 
-        if (response.StatusCode == HttpStatusCode.Unauthorized)
-            throw new UnauthorizedDiscogsException();
+        await response.CheckAndHandleHttpErrorCodes(cancellationToken);
 
         var collectionFolder = await response.Content.DeserializeAsJsonAsync<CollectionFolder>(cancellationToken);
 
@@ -145,8 +138,7 @@ public class DiscogsApiClient
 
         using var response = await _httpClient.SendAsync(request, cancellationToken);
 
-        if (response.StatusCode == HttpStatusCode.Unauthorized)
-            throw new UnauthorizedDiscogsException();
+        await response.CheckAndHandleHttpErrorCodes(cancellationToken);
 
         var collectionFolder = response.StatusCode == HttpStatusCode.OK ? await response.Content.DeserializeAsJsonAsync<CollectionFolder>(cancellationToken) : null;
 
@@ -161,8 +153,7 @@ public class DiscogsApiClient
         using var request = _authorizationProvider.CreateAuthorizedRequest(HttpMethod.Delete, $"{String.Format(DiscogApiUrls.CollectionFoldersUrl, username)}/{folderId}");
         using var response = await _httpClient.SendAsync(request, cancellationToken);
 
-        if (response.StatusCode == HttpStatusCode.Unauthorized)
-            throw new UnauthorizedDiscogsException();
+        await response.CheckAndHandleHttpErrorCodes(cancellationToken);
 
         return response.StatusCode == HttpStatusCode.NoContent;
     }
