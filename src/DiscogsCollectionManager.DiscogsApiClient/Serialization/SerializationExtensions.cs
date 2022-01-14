@@ -5,8 +5,8 @@ namespace DiscogsCollectionManager.DiscogsApiClient.Serialization;
 
 internal static class SerializationExtensions
 {
-    private static readonly DiscogsJsonNamingPolicy _jsonNamingPolicy = new DiscogsJsonNamingPolicy();
-    private static readonly JsonSerializerOptions _jsonSerializerOptions = new JsonSerializerOptions
+    private static readonly DiscogsJsonNamingPolicy _jsonNamingPolicy = new ();
+    private static readonly JsonSerializerOptions _jsonSerializerOptions = new()
     {
         PropertyNamingPolicy = _jsonNamingPolicy
     };

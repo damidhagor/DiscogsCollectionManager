@@ -33,6 +33,7 @@ public class DiscogsApiClient
 
 
 
+    #region User
     public async Task<Identity> GetIdentityAsync(CancellationToken cancellationToken)
     {
         if (!IsAuthorized)
@@ -64,6 +65,7 @@ public class DiscogsApiClient
 
         return user;
     }
+    #endregion
 
 
     #region Collection
@@ -170,7 +172,7 @@ public class DiscogsApiClient
     {
         string json = payload.SerializeAsJson<T>();
 
-        StringContent stringContent = new StringContent(json, System.Text.Encoding.UTF8, "application/json");
+        var stringContent = new StringContent(json, System.Text.Encoding.UTF8, "application/json");
 
         return stringContent;
     }
