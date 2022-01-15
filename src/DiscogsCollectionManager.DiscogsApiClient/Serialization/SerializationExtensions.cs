@@ -1,14 +1,16 @@
 ﻿using System.Text.Json;
+using System.Text.Json.Serialization;
 using DiscogsCollectionManager.DiscogsApiClient.Exceptions;
 
 namespace DiscogsCollectionManager.DiscogsApiClient.Serialization;
 
 internal static class SerializationExtensions
 {
-    private static readonly DiscogsJsonNamingPolicy _jsonNamingPolicy = new ();
+    private static readonly DiscogsJsonNamingPolicy _jsonNamingPolicy = new();
     private static readonly JsonSerializerOptions _jsonSerializerOptions = new()
     {
-        PropertyNamingPolicy = _jsonNamingPolicy
+        PropertyNamingPolicy = _jsonNamingPolicy,
+        Converters = { new JsonStringEnumConverter(_jsonNamingPolicy) }
     };
 
     public static async Task<T> DeserializeAsJsonAsync<T>(this HttpContent httpContent, CancellationToken cancellationToken)

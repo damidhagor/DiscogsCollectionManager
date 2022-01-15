@@ -86,7 +86,7 @@ public class DiscogsApiClient
         return collectionFoldersResponse.Folders;
     }
 
-    public async Task<CollectionFolder?> GetCollectionFolderAsync(string username, int folderId, CancellationToken cancellationToken)
+    public async Task<CollectionFolder> GetCollectionFolderAsync(string username, int folderId, CancellationToken cancellationToken)
     {
         if (!IsAuthorized)
             throw new UnauthorizedDiscogsException();
@@ -103,7 +103,7 @@ public class DiscogsApiClient
         return collectionFolder;
     }
 
-    public async Task<CollectionFolder?> CreateCollectionFolderAsync(string username, CreateCollectionFolderRequest createFolderRequest, CancellationToken cancellationToken)
+    public async Task<CollectionFolder> CreateCollectionFolderAsync(string username, CreateCollectionFolderRequest createFolderRequest, CancellationToken cancellationToken)
     {
         if (!IsAuthorized)
             throw new UnauthorizedDiscogsException();
@@ -125,7 +125,7 @@ public class DiscogsApiClient
         return collectionFolder;
     }
 
-    public async Task<CollectionFolder?> UpdateCollectionFolderAsync(string username, int folderId, CreateCollectionFolderRequest createFolderRequest, CancellationToken cancellationToken)
+    public async Task<CollectionFolder> UpdateCollectionFolderAsync(string username, int folderId, CreateCollectionFolderRequest createFolderRequest, CancellationToken cancellationToken)
     {
         if (!IsAuthorized)
             throw new UnauthorizedDiscogsException();
@@ -142,7 +142,7 @@ public class DiscogsApiClient
 
         await response.CheckAndHandleHttpErrorCodes(cancellationToken);
 
-        var collectionFolder = response.StatusCode == HttpStatusCode.OK ? await response.Content.DeserializeAsJsonAsync<CollectionFolder>(cancellationToken) : null;
+        var collectionFolder = await response.Content.DeserializeAsJsonAsync<CollectionFolder>(cancellationToken);
 
         return collectionFolder;
     }
@@ -160,6 +160,46 @@ public class DiscogsApiClient
         await response.CheckAndHandleHttpErrorCodes(cancellationToken);
 
         return response.StatusCode == HttpStatusCode.NoContent;
+    }
+    #endregion
+
+
+    #region Database
+    public async Task<Artist> GetArtistAsync(int artistId, CancellationToken cancellationToken)
+    {
+        using var request = _authorizationProvider.CreateAuthorizedRequest(HttpMethod.Get, String.Format(DiscogApiUrls.ArtistsUrl, artistId));
+        using var response = await _httpClient.SendAsync(request, cancellationToken);
+
+        await response.CheckAndHandleHttpErrorCodes(cancellationToken);
+
+        var artist = await response.Content.DeserializeAsJsonAsync<Artist>(cancellationToken);
+
+        return artist;
+    }
+
+
+    public async Task<MasterRelease> GetMasterReleaseAsync(int masterReleaseId, CancellationToken cancellationToken)
+    {
+        using var request = _authorizationProvider.CreateAuthorizedRequest(HttpMethod.Get, String.Format(DiscogApiUrls.MasterReleasesUrl, masterReleaseId));
+        using var response = await _httpClient.SendAsync(request, cancellationToken);
+
+        await response.CheckAndHandleHttpErrorCodes(cancellationToken);
+
+        var masterRelease = await response.Content.DeserializeAsJsonAsync<MasterRelease>(cancellationToken);
+
+        return masterRelease;
+    }
+
+    public async Task<Release> GetReleaseAsync(int releaseId, CancellationToken cancellationToken)
+    {
+        using var request = _authorizationProvider.CreateAuthorizedRequest(HttpMethod.Get, String.Format(DiscogApiUrls.ReleasesUrl, releaseId));
+        using var response = await _httpClient.SendAsync(request, cancellationToken);
+
+        await response.CheckAndHandleHttpErrorCodes(cancellationToken);
+
+        var release = await response.Content.DeserializeAsJsonAsync<Release>(cancellationToken);
+
+        return release;
     }
     #endregion
 
