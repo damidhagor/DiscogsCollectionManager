@@ -98,7 +98,7 @@ public class DiscogsApiClient
 
         await response.CheckAndHandleHttpErrorCodes(cancellationToken);
 
-        var collectionFolder = response.StatusCode == HttpStatusCode.OK ? await response.Content.DeserializeAsJsonAsync<CollectionFolder>(cancellationToken) : null;
+        var collectionFolder = await response.Content.DeserializeAsJsonAsync<CollectionFolder>(cancellationToken);
 
         return collectionFolder;
     }
@@ -151,6 +151,8 @@ public class DiscogsApiClient
     {
         if (!IsAuthorized)
             throw new UnauthorizedDiscogsException();
+        if (String.IsNullOrWhiteSpace(username))
+            throw new ArgumentException(nameof(username));
 
         using var request = _authorizationProvider.CreateAuthorizedRequest(HttpMethod.Delete, $"{String.Format(DiscogApiUrls.CollectionFoldersUrl, username)}/{folderId}");
         using var response = await _httpClient.SendAsync(request, cancellationToken);
