@@ -68,7 +68,7 @@ public class DiscogsApiClient
     #endregion
 
 
-    #region Collection
+    #region Collection Folders
     public async Task<List<CollectionFolder>> GetCollectionFoldersAsync(string username, CancellationToken cancellationToken)
     {
         if (!IsAuthorized)
