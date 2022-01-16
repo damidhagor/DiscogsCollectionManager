@@ -213,6 +213,19 @@ public class DiscogsApiClient
 
         return rating;
     }
+
+
+    public async Task<Label> GetLabelAsync(int labelId, CancellationToken cancellationToken)
+    {
+        using var request = _authorizationProvider.CreateAuthorizedRequest(HttpMethod.Get, String.Format(DiscogApiUrls.LabelsUrl, labelId));
+        using var response = await _httpClient.SendAsync(request, cancellationToken);
+
+        await response.CheckAndHandleHttpErrorCodes(cancellationToken);
+
+        var label = await response.Content.DeserializeAsJsonAsync<Label>(cancellationToken);
+
+        return label;
+    }
     #endregion
 
 

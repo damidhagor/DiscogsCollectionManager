@@ -18,4 +18,5 @@ internal static class DiscogApiUrls
     public static readonly string MasterReleasesUrl = $"{BaseUrl}/masters/{{0}}";
     public static readonly string ReleasesUrl = $"{BaseUrl}/releases/{{0}}";
     public static readonly string ReleaseCommunityRatingsUrl = $"{BaseUrl}/releases/{{0}}/rating";
+    public static readonly string LabelsUrl = $"{BaseUrl}/labels/{{0}}";
 }
