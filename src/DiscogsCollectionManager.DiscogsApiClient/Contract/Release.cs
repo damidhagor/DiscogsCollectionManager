@@ -207,10 +207,6 @@ public record ReleaseCommunity(
     string DataQuality,
     string Status);
 
-public record ReleaseCommunityRating(
-    int Count,
-    float Average);
-
 public record ReleaseIdentifiers(
     string Type,
     string Value);

@@ -113,4 +113,27 @@ public class ReleasesTestFixture : ApiBaseTestFixture
 
         Assert.ThrowsAsync<ResourceNotFoundDiscogsException>(() => ApiClient.GetReleaseAsync(releaseId, default));
     }
+
+
+    [Test]
+    public async Task GetReleaseCommunityRating_Success()
+    {
+        var releaseId = 5134861;
+
+        var ratingResponse = await ApiClient.GetReleaseCommunityRatingAsync(releaseId, default);
+
+        Assert.IsNotNull(ratingResponse);
+        Assert.AreEqual(ratingResponse.ReleaseId, releaseId);
+        Assert.IsNotNull(ratingResponse.Rating);
+        Assert.Less(0, ratingResponse.Rating.Count);
+        Assert.Less(0, ratingResponse.Rating.Average);
+    }
+
+    [Test]
+    public void GetReleaseCommunityRating_NotExistingReleaseId()
+    {
+        var releaseId = -1;
+
+        Assert.ThrowsAsync<ResourceNotFoundDiscogsException>(() => ApiClient.GetReleaseCommunityRatingAsync(releaseId, default));
+    }
 }
