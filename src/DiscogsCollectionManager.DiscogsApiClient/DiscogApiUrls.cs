@@ -19,4 +19,7 @@ internal static class DiscogApiUrls
     public static readonly string ReleasesUrl = $"{BaseUrl}/releases/{{0}}";
     public static readonly string ReleaseCommunityRatingsUrl = $"{BaseUrl}/releases/{{0}}/rating";
     public static readonly string LabelsUrl = $"{BaseUrl}/labels/{{0}}";
+    public static readonly string LabelReleasesUrl = $"{BaseUrl}/labels/{{0}}/releases";
+
+    public static string CreatePaginationQuery(int page, int perPage) => $"?page={Math.Max(1, page)}&per_page={Math.Clamp(perPage, 1, 100)}";
 }

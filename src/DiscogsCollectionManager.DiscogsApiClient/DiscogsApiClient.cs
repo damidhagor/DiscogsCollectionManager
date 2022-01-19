@@ -103,18 +103,18 @@ public class DiscogsApiClient
         return collectionFolder;
     }
 
-    public async Task<CollectionFolder> CreateCollectionFolderAsync(string username, CreateCollectionFolderRequest createFolderRequest, CancellationToken cancellationToken)
+    public async Task<CollectionFolder> CreateCollectionFolderAsync(string username, string folderName, CancellationToken cancellationToken)
     {
         if (!IsAuthorized)
             throw new UnauthorizedDiscogsException();
         if (String.IsNullOrWhiteSpace(username))
             throw new ArgumentException(nameof(username));
-        if (String.IsNullOrWhiteSpace(createFolderRequest.Name))
-            throw new ArgumentException(nameof(createFolderRequest));
+        if (String.IsNullOrWhiteSpace(folderName))
+            throw new ArgumentException(nameof(folderName));
 
         using var request = _authorizationProvider.CreateAuthorizedRequest(HttpMethod.Post, String.Format(DiscogApiUrls.CollectionFoldersUrl, username));
 
-        request.Content = CreateJsonContent(createFolderRequest);
+        request.Content = CreateJsonContent(new { Name = folderName });
 
         using var response = await _httpClient.SendAsync(request, cancellationToken);
 
@@ -125,18 +125,18 @@ public class DiscogsApiClient
         return collectionFolder;
     }
 
-    public async Task<CollectionFolder> UpdateCollectionFolderAsync(string username, int folderId, CreateCollectionFolderRequest createFolderRequest, CancellationToken cancellationToken)
+    public async Task<CollectionFolder> UpdateCollectionFolderAsync(string username, int folderId, string folderName, CancellationToken cancellationToken)
     {
         if (!IsAuthorized)
             throw new UnauthorizedDiscogsException();
         if (String.IsNullOrWhiteSpace(username))
             throw new ArgumentException(nameof(username));
-        if (String.IsNullOrWhiteSpace(createFolderRequest.Name))
-            throw new ArgumentException(nameof(createFolderRequest));
+        if (String.IsNullOrWhiteSpace(folderName))
+            throw new ArgumentException(nameof(folderName));
 
         using var request = _authorizationProvider.CreateAuthorizedRequest(HttpMethod.Post, $"{String.Format(DiscogApiUrls.CollectionFoldersUrl, username)}/{folderId}");
 
-        request.Content = CreateJsonContent(createFolderRequest);
+        request.Content = CreateJsonContent(new { Name = folderName });
 
         using var response = await _httpClient.SendAsync(request, cancellationToken);
 
@@ -225,6 +225,20 @@ public class DiscogsApiClient
         var label = await response.Content.DeserializeAsJsonAsync<Label>(cancellationToken);
 
         return label;
+    }
+
+    public async Task<LabelReleasesResponse> GetLabelReleasesAsync(int labelId, int page, int pageSize, CancellationToken cancellationToken)
+    {
+        string url = String.Format(DiscogApiUrls.LabelReleasesUrl, labelId) + DiscogApiUrls.CreatePaginationQuery(page, pageSize);
+
+        using var request = _authorizationProvider.CreateAuthorizedRequest(HttpMethod.Get, url);
+        using var response = await _httpClient.SendAsync(request, cancellationToken);
+
+        await response.CheckAndHandleHttpErrorCodes(cancellationToken);
+
+        var releasesResponse = await response.Content.DeserializeAsJsonAsync<LabelReleasesResponse>(cancellationToken);
+
+        return releasesResponse;
     }
     #endregion
 

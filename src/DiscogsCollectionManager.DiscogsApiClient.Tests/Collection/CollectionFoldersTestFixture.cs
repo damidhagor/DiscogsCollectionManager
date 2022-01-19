@@ -103,27 +103,27 @@ public class CollectionFoldersTestFixture : ApiBaseTestFixture
     public void CreateCollectionFolder_EmptyUsername()
     {
         var username = "";
-        var request = new Contract.CreateCollectionFolderRequest("API_TEST_CREATE_EMPTY_USERNAME");
+        var folderName = "API_TEST_CREATE_EMPTY_USERNAME";
 
-        Assert.ThrowsAsync<ArgumentException>(() => ApiClient.CreateCollectionFolderAsync(username, request, default), "username");
+        Assert.ThrowsAsync<ArgumentException>(() => ApiClient.CreateCollectionFolderAsync(username, folderName, default), "username");
     }
 
     [Test]
     public void CreateCollectionFolder_InvalidUsername()
     {
         var username = "awrbaerhnqw54";
-        var request = new Contract.CreateCollectionFolderRequest("API_TEST_CREATE_INVALID_USERNAME");
+        var folderName = "API_TEST_CREATE_INVALID_USERNAME";
 
-        Assert.ThrowsAsync<ResourceNotFoundDiscogsException>(() => ApiClient.CreateCollectionFolderAsync(username, request, default));
+        Assert.ThrowsAsync<ResourceNotFoundDiscogsException>(() => ApiClient.CreateCollectionFolderAsync(username, folderName, default));
     }
 
     [Test]
     public void CreateCollectionFolder_EmptyFolderName()
     {
         var username = "damidhagor";
-        var request = new Contract.CreateCollectionFolderRequest("");
+        var folderName = "";
 
-        Assert.ThrowsAsync<ArgumentException>(() => ApiClient.CreateCollectionFolderAsync(username, request, default), "createFolderRequest");
+        Assert.ThrowsAsync<ArgumentException>(() => ApiClient.CreateCollectionFolderAsync(username, folderName, default), "createFolderRequest");
     }
 
 
@@ -132,9 +132,9 @@ public class CollectionFoldersTestFixture : ApiBaseTestFixture
     {
         var username = "";
         var folderId = 0;
-        var request = new Contract.CreateCollectionFolderRequest("API_TEST_UPDATE_EMPTY_USERNAME");
+        var folderName = "API_TEST_UPDATE_EMPTY_USERNAME";
 
-        Assert.ThrowsAsync<ArgumentException>(() => ApiClient.UpdateCollectionFolderAsync(username, folderId, request, default), "username");
+        Assert.ThrowsAsync<ArgumentException>(() => ApiClient.UpdateCollectionFolderAsync(username, folderId, folderName, default), "username");
     }
 
     [Test]
@@ -142,9 +142,9 @@ public class CollectionFoldersTestFixture : ApiBaseTestFixture
     {
         var username = "awrbaerhnqw54";
         var folderId = 0;
-        var request = new Contract.CreateCollectionFolderRequest("API_TEST_UPDATE_INVALID_USERNAME");
+        var folderName = "API_TEST_UPDATE_INVALID_USERNAME";
 
-        Assert.ThrowsAsync<ResourceNotFoundDiscogsException>(() => ApiClient.UpdateCollectionFolderAsync(username, folderId, request, default));
+        Assert.ThrowsAsync<ResourceNotFoundDiscogsException>(() => ApiClient.UpdateCollectionFolderAsync(username, folderId, folderName, default));
     }
 
     [Test]
@@ -152,9 +152,9 @@ public class CollectionFoldersTestFixture : ApiBaseTestFixture
     {
         var username = "damidhagor";
         var folderId = 0;
-        var request = new Contract.CreateCollectionFolderRequest("");
+        var folderName = "";
 
-        Assert.ThrowsAsync<ArgumentException>(() => ApiClient.UpdateCollectionFolderAsync(username, folderId, request, default), "createFolderRequest");
+        Assert.ThrowsAsync<ArgumentException>(() => ApiClient.UpdateCollectionFolderAsync(username, folderId, folderName, default), "createFolderRequest");
     }
 
     [Test]
@@ -162,9 +162,9 @@ public class CollectionFoldersTestFixture : ApiBaseTestFixture
     {
         var username = "damidhagor";
         var folderId = -1;
-        var request = new Contract.CreateCollectionFolderRequest("API_TEST_UPDATE_INVALID_ID");
+        var folderName = "API_TEST_UPDATE_INVALID_ID";
 
-        Assert.ThrowsAsync<ResourceNotFoundDiscogsException>(() => ApiClient.UpdateCollectionFolderAsync(username, folderId, request, default));
+        Assert.ThrowsAsync<ResourceNotFoundDiscogsException>(() => ApiClient.UpdateCollectionFolderAsync(username, folderId, folderName, default));
     }
 
     [Test]
@@ -172,9 +172,9 @@ public class CollectionFoldersTestFixture : ApiBaseTestFixture
     {
         var username = "damidhagor";
         var folderId = 42;
-        var request = new Contract.CreateCollectionFolderRequest("API_TEST_UPDATE_NOT_EXISTING_ID");
+        var folderName = "API_TEST_UPDATE_NOT_EXISTING_ID";
 
-        Assert.ThrowsAsync<ResourceNotFoundDiscogsException>(() => ApiClient.UpdateCollectionFolderAsync(username, folderId, request, default));
+        Assert.ThrowsAsync<ResourceNotFoundDiscogsException>(() => ApiClient.UpdateCollectionFolderAsync(username, folderId, folderName, default));
     }
 
 
@@ -223,14 +223,12 @@ public class CollectionFoldersTestFixture : ApiBaseTestFixture
         var folderName2 = "API_TEST_WORKFLOW_UPDATE";
 
         // Add
-        var createRequest = new Contract.CreateCollectionFolderRequest(folderName1);
-        var createdFolder = await ApiClient.CreateCollectionFolderAsync(username, createRequest, default);
+        var createdFolder = await ApiClient.CreateCollectionFolderAsync(username, folderName1, default);
         Assert.IsNotNull(createdFolder);
         Assert.AreEqual(folderName1, createdFolder!.Name);
 
         // Update
-        var updateRequest = new Contract.CreateCollectionFolderRequest(folderName2);
-        var updatedFolder = await ApiClient.UpdateCollectionFolderAsync(username, createdFolder.Id, updateRequest, default);
+        var updatedFolder = await ApiClient.UpdateCollectionFolderAsync(username, createdFolder.Id, folderName2, default);
         Assert.IsNotNull(updatedFolder);
         Assert.AreEqual(folderName2, updatedFolder!.Name);
         Assert.AreEqual(createdFolder.Id, updatedFolder!.Id);
