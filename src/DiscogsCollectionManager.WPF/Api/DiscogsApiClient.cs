@@ -52,8 +52,7 @@ internal class DiscogsApiClient : IDiscogsApiClient, IDisposable
 
     public async Task<CollectionFolder?> CreateCollectionFolderAsync(string username, string name, CancellationToken cancellationToken)
     {
-        var request = new CreateCollectionFolderRequest(name);
-        return await _discogsClient.CreateCollectionFolderAsync(username, request, cancellationToken);
+        return await _discogsClient.CreateCollectionFolderAsync(username, name, cancellationToken);
     }
 
     public async Task<CollectionFolder?> GetCollectionFolderAsync(string username, int folderId, CancellationToken cancellationToken)
@@ -63,7 +62,7 @@ internal class DiscogsApiClient : IDiscogsApiClient, IDisposable
 
     public async Task<CollectionFolder?> UpdateCollectionFolderAsync(string username, int folderId, string name, CancellationToken cancellationToken)
     {
-        return await _discogsClient.UpdateCollectionFolderAsync(username, folderId, new CreateCollectionFolderRequest(name), cancellationToken);
+        return await _discogsClient.UpdateCollectionFolderAsync(username, folderId, name, cancellationToken);
     }
 
     public async Task<bool> DeleteCollectionFolderAsync(string username, int folderId, CancellationToken cancellationToken)
