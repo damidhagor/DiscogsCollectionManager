@@ -177,6 +177,20 @@ public class DiscogsApiClient
         return artist;
     }
 
+    public async Task<ArtistReleasesResponse> GetArtistReleasesAsync(int artistId, int page, int pageSize, CancellationToken cancellationToken)
+    {
+        string url = String.Format(DiscogApiUrls.ArtistReleasesUrl, artistId) + DiscogApiUrls.CreatePaginationQuery(page, pageSize);
+
+        using var request = _authorizationProvider.CreateAuthorizedRequest(HttpMethod.Get, url);
+        using var response = await _httpClient.SendAsync(request, cancellationToken);
+
+        await response.CheckAndHandleHttpErrorCodes(cancellationToken);
+
+        var releasesResponse = await response.Content.DeserializeAsJsonAsync<ArtistReleasesResponse>(cancellationToken);
+
+        return releasesResponse;
+    }
+
 
     public async Task<MasterRelease> GetMasterReleaseAsync(int masterReleaseId, CancellationToken cancellationToken)
     {
