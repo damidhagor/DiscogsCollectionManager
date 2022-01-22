@@ -165,7 +165,7 @@ public class DiscogsApiClient
 
 
     #region Wantlist
-    public async Task GetWantlistReleasesAsync(string username, int page, int pageSize, CancellationToken cancellationToken)
+    public async Task<WantlistReleasesResponse> GetWantlistReleasesAsync(string username, int page, int pageSize, CancellationToken cancellationToken)
     {
         if (!IsAuthorized)
             throw new UnauthorizedDiscogsException();
@@ -179,12 +179,9 @@ public class DiscogsApiClient
 
         await response.CheckAndHandleHttpErrorCodes(cancellationToken);
 
-        var content = await response.Content.ReadAsStringAsync();
-        ;
+        var releasesResponse = await response.Content.DeserializeAsJsonAsync<WantlistReleasesResponse>(cancellationToken);
 
-        //var collectionFolder = await response.Content.DeserializeAsJsonAsync<CollectionFolder>(cancellationToken);
-
-        //return collectionFolder;
+        return releasesResponse;
     }
 
     public async Task<WantlistRelease> AddWantlistReleaseAsync(string username, int releaseId, CancellationToken cancellationToken)

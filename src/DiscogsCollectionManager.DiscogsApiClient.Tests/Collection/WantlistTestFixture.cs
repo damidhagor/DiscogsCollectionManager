@@ -8,6 +8,26 @@ namespace DiscogsCollectionManager.DiscogsApiClient.Tests.Collection;
 public class WantlistTestFixture : ApiBaseTestFixture
 {
     [Test]
+    public async Task GetAllWantlistReleases_Success()
+    {
+        var username = "damidhagor";
+        var itemCount = 0;
+        var summedUpItemCount = 0;
+
+        var response = await ApiClient.GetWantlistReleasesAsync(username, 1, 50, default);
+        itemCount = response.Pagination.Items;
+        summedUpItemCount += response.Wants.Count;
+
+        for (int p = 2; p <= response.Pagination.Pages; p++)
+        {
+            response = await ApiClient.GetWantlistReleasesAsync(username, 1, 50, default);
+            summedUpItemCount += response.Wants.Count;
+        }
+
+        Assert.AreEqual(itemCount, summedUpItemCount);
+    }
+
+    [Test]
     public void GetWantlist_EmptyUsername()
     {
         var username = "";

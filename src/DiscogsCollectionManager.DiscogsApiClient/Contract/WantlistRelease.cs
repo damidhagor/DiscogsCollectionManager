@@ -57,6 +57,10 @@
 }
 */
 
+public record WantlistReleasesResponse(
+    Pagination Pagination,
+    List<WantlistRelease> Wants);
+
 public record WantlistRelease(
     int Id,
     string ResourceUrl,
