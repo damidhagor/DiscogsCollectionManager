@@ -164,6 +164,62 @@ public class DiscogsApiClient
     #endregion
 
 
+    #region Wantlist
+    public async Task GetWantlistReleasesAsync(string username, int page, int pageSize, CancellationToken cancellationToken)
+    {
+        if (!IsAuthorized)
+            throw new UnauthorizedDiscogsException();
+        if (String.IsNullOrWhiteSpace(username))
+            throw new ArgumentException(nameof(username));
+
+        string url = String.Format(DiscogApiUrls.WantlistUrl, username) + DiscogApiUrls.CreatePaginationQuery(page, pageSize);
+
+        using var request = _authorizationProvider.CreateAuthorizedRequest(HttpMethod.Get, url);
+        using var response = await _httpClient.SendAsync(request, cancellationToken);
+
+        await response.CheckAndHandleHttpErrorCodes(cancellationToken);
+
+        var content = await response.Content.ReadAsStringAsync();
+        ;
+
+        //var collectionFolder = await response.Content.DeserializeAsJsonAsync<CollectionFolder>(cancellationToken);
+
+        //return collectionFolder;
+    }
+
+    public async Task<WantlistRelease> AddWantlistReleaseAsync(string username, int releaseId, CancellationToken cancellationToken)
+    {
+        if (!IsAuthorized)
+            throw new UnauthorizedDiscogsException();
+        if (String.IsNullOrWhiteSpace(username))
+            throw new ArgumentException(nameof(username));
+
+        using var request = _authorizationProvider.CreateAuthorizedRequest(HttpMethod.Put, String.Format(DiscogApiUrls.WantlistReleaseUrl, username, releaseId));
+        using var response = await _httpClient.SendAsync(request, cancellationToken);
+
+        await response.CheckAndHandleHttpErrorCodes(cancellationToken);
+
+        var release = await response.Content.DeserializeAsJsonAsync<WantlistRelease>(cancellationToken);
+
+        return release;
+    }
+
+    public async Task<bool> DeleteWantlistReleaseAsync(string username, int releaseId, CancellationToken cancellationToken)
+    {
+        if (!IsAuthorized)
+            throw new UnauthorizedDiscogsException();
+        if (String.IsNullOrWhiteSpace(username))
+            throw new ArgumentException(nameof(username));
+
+        using var request = _authorizationProvider.CreateAuthorizedRequest(HttpMethod.Delete, String.Format(DiscogApiUrls.WantlistReleaseUrl, username, releaseId));
+        using var response = await _httpClient.SendAsync(request, cancellationToken);
+
+        await response.CheckAndHandleHttpErrorCodes(cancellationToken);
+
+        return response.StatusCode == HttpStatusCode.NoContent;
+    }
+    #endregion
+
     #region Database
     public async Task<Artist> GetArtistAsync(int artistId, CancellationToken cancellationToken)
     {

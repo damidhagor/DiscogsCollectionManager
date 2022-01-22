@@ -1,4 +1,6 @@
-﻿namespace DiscogsCollectionManager.DiscogsApiClient;
+﻿using System.Net;
+
+namespace DiscogsCollectionManager.DiscogsApiClient;
 
 internal static class DiscogApiUrls
 {
@@ -13,6 +15,10 @@ internal static class DiscogApiUrls
 
     public static readonly string UsersUrl = $"{BaseUrl}/users/{{0}}";
     public static readonly string CollectionFoldersUrl = $"{BaseUrl}/users/{{0}}/collection/folders";
+
+    public static readonly string WantlistUrl = $"{BaseUrl}/users/{{0}}/wants";
+    public static readonly string WantlistReleaseUrl = $"{BaseUrl}/users/{{0}}/wants/{{1}}";
+
 
     public static readonly string ArtistsUrl = $"{BaseUrl}/artists/{{0}}";
     public static readonly string ArtistReleasesUrl = $"{BaseUrl}/artists/{{0}}/releases";
