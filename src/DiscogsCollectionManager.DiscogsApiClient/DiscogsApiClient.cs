@@ -164,6 +164,26 @@ public class DiscogsApiClient
     #endregion
 
 
+    #region Collection Items
+    public async Task<CollectionFolderReleasesResponse> GetCollectionFolderReleasesByFolderIdAsync(string username, int folderId, CancellationToken cancellationToken)
+    {
+        if (!IsAuthorized)
+            throw new UnauthorizedDiscogsException();
+        if (String.IsNullOrWhiteSpace(username))
+            throw new ArgumentException(nameof(username));
+
+        using var request = _authorizationProvider.CreateAuthorizedRequest(HttpMethod.Get, String.Format(DiscogApiUrls.CollectionFolderReleasesUrl, username, folderId));
+        using var response = await _httpClient.SendAsync(request, cancellationToken);
+
+        await response.CheckAndHandleHttpErrorCodes(cancellationToken);
+
+        var collectionFolderReleasesResponse = await response.Content.DeserializeAsJsonAsync<CollectionFolderReleasesResponse>(cancellationToken);
+
+        return collectionFolderReleasesResponse;
+    }
+    #endregion
+
+
     #region Wantlist
     public async Task<WantlistReleasesResponse> GetWantlistReleasesAsync(string username, int page, int pageSize, CancellationToken cancellationToken)
     {
