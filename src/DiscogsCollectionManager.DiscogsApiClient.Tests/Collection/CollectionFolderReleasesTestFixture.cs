@@ -8,33 +8,6 @@ namespace DiscogsCollectionManager.DiscogsApiClient.Tests.Collection;
 public class CollectionFolderReleasesTestFixture : ApiBaseTestFixture
 {
     [Test]
-    public async Task GetCollectionFolderReleases_Success()
-    {
-        var username = "damidhagor";
-        var folderId = 1;
-        var releaseId = 5134861;
-
-        var response = await ApiClient.AddReleaseToCollectionFolderAsync(username, folderId, releaseId, default);
-        
-
-        //Assert.IsNotNull(foldersResponse);
-        //Assert.LessOrEqual(2, foldersResponse.Count);
-
-        //var allFolder = foldersResponse.FirstOrDefault(f => f.Id == 0);
-        //var uncategorizedFolder = foldersResponse.FirstOrDefault(f => f.Id == 1);
-
-        //Assert.IsNotNull(allFolder);
-        //Assert.AreEqual(0, allFolder!.Id);
-        //Assert.AreEqual("All", allFolder!.Name);
-        //Assert.IsFalse(String.IsNullOrWhiteSpace(allFolder!.ResourceUrl));
-
-        //Assert.IsNotNull(uncategorizedFolder);
-        //Assert.AreEqual(1, uncategorizedFolder!.Id);
-        //Assert.AreEqual("Uncategorized", uncategorizedFolder!.Name);
-        //Assert.IsFalse(String.IsNullOrWhiteSpace(uncategorizedFolder!.ResourceUrl));
-    }
-
-    [Test]
     public void GetCollectionFolderReleases_EmptyUsername()
     {
         var username = "";
@@ -229,5 +202,33 @@ public class CollectionFolderReleasesTestFixture : ApiBaseTestFixture
         var instanceId = Int32.MaxValue;
 
         Assert.ThrowsAsync<ResourceNotFoundDiscogsException>(() => ApiClient.DeleteReleaseFromCollectionFolderAsync(username, folderId, releaseId, instanceId, default));
+    }
+
+
+    [Test]
+    public async Task CreateDeleteReleaseFromCollectionFolder_Success()
+    {
+        var username = "damidhagor";
+        var folderName = "CreateDeleteReleaseFromCollectionFolder_Success";
+        var releaseId = 5134861;
+
+
+        // Create test folder
+        var collectionFolder = await ApiClient.CreateCollectionFolderAsync(username, folderName, default);
+
+        // Add release to folder
+        var collectionFolderRelease = await ApiClient.AddReleaseToCollectionFolderAsync(username, collectionFolder.Id, releaseId, default);
+
+        // Delete release from folder
+        var wasReleaseDeleted = await ApiClient.DeleteReleaseFromCollectionFolderAsync(username, collectionFolder.Id, collectionFolderRelease.Id, collectionFolderRelease.InstanceId, default);
+
+        // Delete folder
+        var wasFolderDeleted = await ApiClient.DeleteCollectionFolderAsync(username, collectionFolder.Id, default);
+
+
+        Assert.IsNotNull(collectionFolderRelease);
+        Assert.AreEqual(releaseId, collectionFolderRelease.Id);
+        Assert.IsTrue(wasReleaseDeleted);
+        Assert.IsTrue(wasFolderDeleted);
     }
 }

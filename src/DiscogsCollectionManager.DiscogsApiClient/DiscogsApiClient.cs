@@ -206,7 +206,7 @@ public class DiscogsApiClient
         if (String.IsNullOrWhiteSpace(username))
             throw new ArgumentException(nameof(username));
 
-        using var request = _authorizationProvider.CreateAuthorizedRequest(HttpMethod.Post, String.Format(DiscogApiUrls.CollectionFolderDeleteReleaseUrl, username, folderId, releaseId, instanceId));
+        using var request = _authorizationProvider.CreateAuthorizedRequest(HttpMethod.Delete, String.Format(DiscogApiUrls.CollectionFolderDeleteReleaseUrl, username, folderId, releaseId, instanceId));
         using var response = await _httpClient.SendAsync(request, cancellationToken);
 
         await response.CheckAndHandleHttpErrorCodes(cancellationToken);
