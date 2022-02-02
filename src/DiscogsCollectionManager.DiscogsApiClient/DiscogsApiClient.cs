@@ -181,6 +181,23 @@ public class DiscogsApiClient
 
         return collectionFolderReleasesResponse;
     }
+
+    public async Task<CollectionFolderRelease> AddReleaseToCollectionFolderAsync(string username, int folderId, int releaseId, CancellationToken cancellationToken)
+    {
+        if (!IsAuthorized)
+            throw new UnauthorizedDiscogsException();
+        if (String.IsNullOrWhiteSpace(username))
+            throw new ArgumentException(nameof(username));
+
+        using var request = _authorizationProvider.CreateAuthorizedRequest(HttpMethod.Post, String.Format(DiscogApiUrls.CollectionFolderAddReleaseUrl, username, folderId, releaseId));
+        using var response = await _httpClient.SendAsync(request, cancellationToken);
+
+        await response.CheckAndHandleHttpErrorCodes(cancellationToken);
+
+        var collectionFolderRelease = await response.Content.DeserializeAsJsonAsync<CollectionFolderRelease>(cancellationToken);
+
+        return collectionFolderRelease;
+    }
     #endregion
 
 

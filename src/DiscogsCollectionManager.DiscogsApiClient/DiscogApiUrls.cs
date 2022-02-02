@@ -16,6 +16,7 @@ internal static class DiscogApiUrls
     public static readonly string UsersUrl = $"{BaseUrl}/users/{{0}}";
     public static readonly string CollectionFoldersUrl = $"{BaseUrl}/users/{{0}}/collection/folders";
     public static readonly string CollectionFolderReleasesUrl = $"{BaseUrl}/users/{{0}}/collection/folders/{{1}}/releases";
+    public static readonly string CollectionFolderAddReleaseUrl = $"{BaseUrl}/users/{{0}}/collection/folders/{{1}}/releases/{{2}}";
 
     public static readonly string WantlistUrl = $"{BaseUrl}/users/{{0}}/wants";
     public static readonly string WantlistReleaseUrl = $"{BaseUrl}/users/{{0}}/wants/{{1}}";

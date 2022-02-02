@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using System.Threading.Tasks;
 using DiscogsCollectionManager.DiscogsApiClient.Exceptions;
 using NUnit.Framework;
@@ -12,10 +11,11 @@ public class CollectionFolderReleasesTestFixture : ApiBaseTestFixture
     public async Task GetCollectionFolderReleases_Success()
     {
         var username = "damidhagor";
-        var folderId = 0;
+        var folderId = 1;
+        var releaseId = 5134861;
 
-        var response = await ApiClient.GetCollectionFolderReleasesByFolderIdAsync(username, folderId, default);
-
+        var response = await ApiClient.AddReleaseToCollectionFolderAsync(username, folderId, releaseId, default);
+        
 
         //Assert.IsNotNull(foldersResponse);
         //Assert.LessOrEqual(2, foldersResponse.Count);
@@ -70,6 +70,77 @@ public class CollectionFolderReleasesTestFixture : ApiBaseTestFixture
         Assert.ThrowsAsync<ResourceNotFoundDiscogsException>(() => ApiClient.GetCollectionFolderReleasesByFolderIdAsync(username, folderId, default));
     }
 
+
+    [Test]
+    public void AddReleaseToCollectionFolder_EmptyUsername()
+    {
+        var username = "";
+        var folderId = 1;
+        var releaseId = 5134861;
+
+        Assert.ThrowsAsync<ArgumentException>(() => ApiClient.AddReleaseToCollectionFolderAsync(username, folderId, releaseId, default), "username");
+    }
+
+    [Test]
+    public void AddReleaseToCollectionFolder_InvalidUsername()
+    {
+        var username = "awrbaerhnqw54";
+        var folderId = 1;
+        var releaseId = 5134861;
+
+        Assert.ThrowsAsync<ResourceNotFoundDiscogsException>(() => ApiClient.AddReleaseToCollectionFolderAsync(username, folderId, releaseId, default));
+    }
+
+    [Test]
+    public void AddReleaseToCollectionFolder_InvalidFolderId()
+    {
+        var username = "damidhagor";
+        var folderId = -1;
+        var releaseId = 5134861;
+
+        Assert.ThrowsAsync<ResourceNotFoundDiscogsException>(() => ApiClient.AddReleaseToCollectionFolderAsync(username, folderId, releaseId, default));
+    }
+
+    [Test]
+    public void AddReleaseToCollectionFolder_NotExistingFolderId()
+    {
+        var username = "damidhagor";
+        var folderId = 42;
+        var releaseId = 5134861;
+
+        Assert.ThrowsAsync<ResourceNotFoundDiscogsException>(() => ApiClient.AddReleaseToCollectionFolderAsync(username, folderId, releaseId, default));
+    }
+
+    [Test]
+    public void AddReleaseToCollectionFolder_AllFolderId()
+    {
+        var username = "damidhagor";
+        var folderId = 0;
+        var releaseId = 5134861;
+
+        Assert.ThrowsAsync<DiscogsException>(() => ApiClient.AddReleaseToCollectionFolderAsync(username, folderId, releaseId, default),
+            "Invalid folder_id: cannot add releases to the 'All' folder.");
+    }
+
+    [Test]
+    public void AddReleaseToCollectionFolder_InvalidReleaseId()
+    {
+        var username = "damidhagor";
+        var folderId = 1;
+        var releaseId = -1;
+
+        Assert.ThrowsAsync<ResourceNotFoundDiscogsException>(() => ApiClient.AddReleaseToCollectionFolderAsync(username, folderId, releaseId, default));
+    }
+
+    [Test]
+    public void AddReleaseToCollectionFolder_NotExistingReleaseId()
+    {
+        var username = "damidhagor";
+        var folderId = 1;
+        var releaseId = Int32.MaxValue;
+
+        Assert.ThrowsAsync<ResourceNotFoundDiscogsException>(() => ApiClient.AddReleaseToCollectionFolderAsync(username, folderId, releaseId, default));
+    }
 
     //[Test]
     //public void CreateCollectionFolder_EmptyUsername()
