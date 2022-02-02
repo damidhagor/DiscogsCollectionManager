@@ -198,6 +198,21 @@ public class DiscogsApiClient
 
         return collectionFolderRelease;
     }
+
+    public async Task<bool> DeleteReleaseFromCollectionFolderAsync(string username, int folderId, int releaseId, int instanceId, CancellationToken cancellationToken)
+    {
+        if (!IsAuthorized)
+            throw new UnauthorizedDiscogsException();
+        if (String.IsNullOrWhiteSpace(username))
+            throw new ArgumentException(nameof(username));
+
+        using var request = _authorizationProvider.CreateAuthorizedRequest(HttpMethod.Post, String.Format(DiscogApiUrls.CollectionFolderDeleteReleaseUrl, username, folderId, releaseId, instanceId));
+        using var response = await _httpClient.SendAsync(request, cancellationToken);
+
+        await response.CheckAndHandleHttpErrorCodes(cancellationToken);
+
+        return response.StatusCode == HttpStatusCode.NoContent;
+    }
     #endregion
 
 
