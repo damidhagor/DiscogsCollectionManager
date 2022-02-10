@@ -2,7 +2,7 @@
 
 namespace DiscogsCollectionManager.DiscogsApiClient;
 
-internal static class DiscogApiUrls
+internal static class DiscogsApiUrls
 {
     public static readonly string BaseUrl = "https://api.discogs.com";
 
@@ -22,7 +22,6 @@ internal static class DiscogApiUrls
     public static readonly string WantlistUrl = $"{BaseUrl}/users/{{0}}/wants";
     public static readonly string WantlistReleaseUrl = $"{BaseUrl}/users/{{0}}/wants/{{1}}";
 
-
     public static readonly string ArtistsUrl = $"{BaseUrl}/artists/{{0}}";
     public static readonly string ArtistReleasesUrl = $"{BaseUrl}/artists/{{0}}/releases";
     public static readonly string MasterReleasesUrl = $"{BaseUrl}/masters/{{0}}";
@@ -30,6 +29,8 @@ internal static class DiscogApiUrls
     public static readonly string ReleaseCommunityRatingsUrl = $"{BaseUrl}/releases/{{0}}/rating";
     public static readonly string LabelsUrl = $"{BaseUrl}/labels/{{0}}";
     public static readonly string LabelReleasesUrl = $"{BaseUrl}/labels/{{0}}/releases";
+
+    public static readonly string SearchUrl= $"{BaseUrl}/database/search";
 
     public static string CreatePaginationQuery(int page, int perPage) => $"?page={Math.Max(1, page)}&per_page={Math.Clamp(perPage, 1, 100)}";
 }

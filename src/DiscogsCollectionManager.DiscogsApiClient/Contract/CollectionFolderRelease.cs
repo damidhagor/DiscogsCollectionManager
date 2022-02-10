@@ -106,7 +106,7 @@ public record CollectionFolderReleaseInformation(
     string ResourceUrl,
     string Title,
     int Year,
-    List<ReleaseFormats> Formats,
+    List<ReleaseFormat> Formats,
     List<CollectionFolderReleaseLabel> Labels,
     List<CollectionFolderReleaseArtist> Artists,
     string Thumb,

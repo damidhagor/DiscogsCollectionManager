@@ -97,7 +97,7 @@ public class PlainOAuthAuthorizationProvider : IAuthorizationProvider
 
         try
         {
-            var url = String.Format(DiscogApiUrls.VerifierTokenUrl, requestToken);
+            var url = String.Format(DiscogsApiUrls.VerifierTokenUrl, requestToken);
             var verifierResult = await getVerifier(url, callback, cancellationToken);
 
             if (verifierResult != null)
@@ -138,7 +138,7 @@ public class PlainOAuthAuthorizationProvider : IAuthorizationProvider
 
     private HttpRequestMessage CreateRequestTokenRequest(string callback)
     {
-        HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, DiscogApiUrls.OAuthRequestTokenUrl);
+        HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, DiscogsApiUrls.OAuthRequestTokenUrl);
 
         request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/x-www-form-urlencoded"));
 
@@ -159,7 +159,7 @@ public class PlainOAuthAuthorizationProvider : IAuthorizationProvider
 
     private HttpRequestMessage CreateAccessTokenRequest(string requestToken, string requestTokenSecret, string verifier)
     {
-        HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Post, DiscogApiUrls.OAuthAccessTokenUrl);
+        HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Post, DiscogsApiUrls.OAuthAccessTokenUrl);
 
         request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/x-www-form-urlencoded"));
 

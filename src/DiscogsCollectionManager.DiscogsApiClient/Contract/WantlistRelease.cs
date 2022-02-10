@@ -76,7 +76,7 @@ public record WantlistReleaseInformation(
     string ResourceUrl,
     string Title,
     int Year,
-    List<ReleaseFormats> Formats,
+    List<ReleaseFormat> Formats,
     List<WantlistReleaseLabel> Labels,
     List<WantlistReleaseArtist> Artists,
     string Thumb,

@@ -160,7 +160,7 @@ public record Release(
     List<ReleaseArtist> Artists,
     string ArtistsSort,
     List<ReleaseLabel> Labels,
-    List<ReleaseFormats> Formats,
+    List<ReleaseFormat> Formats,
     ReleaseCommunity Community,
     int FormatQuantity,
     DateTime DateAdded,
@@ -195,7 +195,7 @@ public record ReleaseLabel(
     string EntityType,
     string EntityTypeName);
 
-public record ReleaseFormats(
+public record ReleaseFormat(
     string Name,
     string Qty,
     List<string> Descriptions);

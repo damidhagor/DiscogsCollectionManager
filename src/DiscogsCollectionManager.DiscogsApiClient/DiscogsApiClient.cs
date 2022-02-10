@@ -39,7 +39,7 @@ public class DiscogsApiClient
         if (!IsAuthorized)
             throw new UnauthorizedDiscogsException();
 
-        using var request = _authorizationProvider.CreateAuthorizedRequest(HttpMethod.Get, DiscogApiUrls.OAuthIdentityUrl);
+        using var request = _authorizationProvider.CreateAuthorizedRequest(HttpMethod.Get, DiscogsApiUrls.OAuthIdentityUrl);
         using var response = await _httpClient.SendAsync(request, cancellationToken);
 
         await response.CheckAndHandleHttpErrorCodes(cancellationToken);
@@ -56,7 +56,7 @@ public class DiscogsApiClient
         if (String.IsNullOrWhiteSpace(username))
             throw new ArgumentException(nameof(username));
 
-        using var request = _authorizationProvider.CreateAuthorizedRequest(HttpMethod.Get, String.Format(DiscogApiUrls.UsersUrl, username));
+        using var request = _authorizationProvider.CreateAuthorizedRequest(HttpMethod.Get, String.Format(DiscogsApiUrls.UsersUrl, username));
         using var response = await _httpClient.SendAsync(request, cancellationToken);
 
         await response.CheckAndHandleHttpErrorCodes(cancellationToken);
@@ -76,7 +76,7 @@ public class DiscogsApiClient
         if (String.IsNullOrWhiteSpace(username))
             throw new ArgumentException(nameof(username));
 
-        using var request = _authorizationProvider.CreateAuthorizedRequest(HttpMethod.Get, String.Format(DiscogApiUrls.CollectionFoldersUrl, username));
+        using var request = _authorizationProvider.CreateAuthorizedRequest(HttpMethod.Get, String.Format(DiscogsApiUrls.CollectionFoldersUrl, username));
         using var response = await _httpClient.SendAsync(request, cancellationToken);
 
         await response.CheckAndHandleHttpErrorCodes(cancellationToken);
@@ -93,7 +93,7 @@ public class DiscogsApiClient
         if (String.IsNullOrWhiteSpace(username))
             throw new ArgumentException(nameof(username));
 
-        using var request = _authorizationProvider.CreateAuthorizedRequest(HttpMethod.Get, $"{String.Format(DiscogApiUrls.CollectionFoldersUrl, username)}/{folderId}");
+        using var request = _authorizationProvider.CreateAuthorizedRequest(HttpMethod.Get, $"{String.Format(DiscogsApiUrls.CollectionFoldersUrl, username)}/{folderId}");
         using var response = await _httpClient.SendAsync(request, cancellationToken);
 
         await response.CheckAndHandleHttpErrorCodes(cancellationToken);
@@ -112,7 +112,7 @@ public class DiscogsApiClient
         if (String.IsNullOrWhiteSpace(folderName))
             throw new ArgumentException(nameof(folderName));
 
-        using var request = _authorizationProvider.CreateAuthorizedRequest(HttpMethod.Post, String.Format(DiscogApiUrls.CollectionFoldersUrl, username));
+        using var request = _authorizationProvider.CreateAuthorizedRequest(HttpMethod.Post, String.Format(DiscogsApiUrls.CollectionFoldersUrl, username));
 
         request.Content = CreateJsonContent(new { Name = folderName });
 
@@ -134,7 +134,7 @@ public class DiscogsApiClient
         if (String.IsNullOrWhiteSpace(folderName))
             throw new ArgumentException(nameof(folderName));
 
-        using var request = _authorizationProvider.CreateAuthorizedRequest(HttpMethod.Post, $"{String.Format(DiscogApiUrls.CollectionFoldersUrl, username)}/{folderId}");
+        using var request = _authorizationProvider.CreateAuthorizedRequest(HttpMethod.Post, $"{String.Format(DiscogsApiUrls.CollectionFoldersUrl, username)}/{folderId}");
 
         request.Content = CreateJsonContent(new { Name = folderName });
 
@@ -154,7 +154,7 @@ public class DiscogsApiClient
         if (String.IsNullOrWhiteSpace(username))
             throw new ArgumentException(nameof(username));
 
-        using var request = _authorizationProvider.CreateAuthorizedRequest(HttpMethod.Delete, $"{String.Format(DiscogApiUrls.CollectionFoldersUrl, username)}/{folderId}");
+        using var request = _authorizationProvider.CreateAuthorizedRequest(HttpMethod.Delete, $"{String.Format(DiscogsApiUrls.CollectionFoldersUrl, username)}/{folderId}");
         using var response = await _httpClient.SendAsync(request, cancellationToken);
 
         await response.CheckAndHandleHttpErrorCodes(cancellationToken);
@@ -172,7 +172,7 @@ public class DiscogsApiClient
         if (String.IsNullOrWhiteSpace(username))
             throw new ArgumentException(nameof(username));
 
-        using var request = _authorizationProvider.CreateAuthorizedRequest(HttpMethod.Get, String.Format(DiscogApiUrls.CollectionFolderReleasesUrl, username, folderId));
+        using var request = _authorizationProvider.CreateAuthorizedRequest(HttpMethod.Get, String.Format(DiscogsApiUrls.CollectionFolderReleasesUrl, username, folderId));
         using var response = await _httpClient.SendAsync(request, cancellationToken);
 
         await response.CheckAndHandleHttpErrorCodes(cancellationToken);
@@ -189,7 +189,7 @@ public class DiscogsApiClient
         if (String.IsNullOrWhiteSpace(username))
             throw new ArgumentException(nameof(username));
 
-        using var request = _authorizationProvider.CreateAuthorizedRequest(HttpMethod.Post, String.Format(DiscogApiUrls.CollectionFolderAddReleaseUrl, username, folderId, releaseId));
+        using var request = _authorizationProvider.CreateAuthorizedRequest(HttpMethod.Post, String.Format(DiscogsApiUrls.CollectionFolderAddReleaseUrl, username, folderId, releaseId));
         using var response = await _httpClient.SendAsync(request, cancellationToken);
 
         await response.CheckAndHandleHttpErrorCodes(cancellationToken);
@@ -206,7 +206,7 @@ public class DiscogsApiClient
         if (String.IsNullOrWhiteSpace(username))
             throw new ArgumentException(nameof(username));
 
-        using var request = _authorizationProvider.CreateAuthorizedRequest(HttpMethod.Delete, String.Format(DiscogApiUrls.CollectionFolderDeleteReleaseUrl, username, folderId, releaseId, instanceId));
+        using var request = _authorizationProvider.CreateAuthorizedRequest(HttpMethod.Delete, String.Format(DiscogsApiUrls.CollectionFolderDeleteReleaseUrl, username, folderId, releaseId, instanceId));
         using var response = await _httpClient.SendAsync(request, cancellationToken);
 
         await response.CheckAndHandleHttpErrorCodes(cancellationToken);
@@ -224,7 +224,7 @@ public class DiscogsApiClient
         if (String.IsNullOrWhiteSpace(username))
             throw new ArgumentException(nameof(username));
 
-        string url = String.Format(DiscogApiUrls.WantlistUrl, username) + DiscogApiUrls.CreatePaginationQuery(page, pageSize);
+        string url = String.Format(DiscogsApiUrls.WantlistUrl, username) + "?" + DiscogsApiUrls.CreatePaginationQuery(page, pageSize);
 
         using var request = _authorizationProvider.CreateAuthorizedRequest(HttpMethod.Get, url);
         using var response = await _httpClient.SendAsync(request, cancellationToken);
@@ -243,7 +243,7 @@ public class DiscogsApiClient
         if (String.IsNullOrWhiteSpace(username))
             throw new ArgumentException(nameof(username));
 
-        using var request = _authorizationProvider.CreateAuthorizedRequest(HttpMethod.Put, String.Format(DiscogApiUrls.WantlistReleaseUrl, username, releaseId));
+        using var request = _authorizationProvider.CreateAuthorizedRequest(HttpMethod.Put, String.Format(DiscogsApiUrls.WantlistReleaseUrl, username, releaseId));
         using var response = await _httpClient.SendAsync(request, cancellationToken);
 
         await response.CheckAndHandleHttpErrorCodes(cancellationToken);
@@ -260,7 +260,7 @@ public class DiscogsApiClient
         if (String.IsNullOrWhiteSpace(username))
             throw new ArgumentException(nameof(username));
 
-        using var request = _authorizationProvider.CreateAuthorizedRequest(HttpMethod.Delete, String.Format(DiscogApiUrls.WantlistReleaseUrl, username, releaseId));
+        using var request = _authorizationProvider.CreateAuthorizedRequest(HttpMethod.Delete, String.Format(DiscogsApiUrls.WantlistReleaseUrl, username, releaseId));
         using var response = await _httpClient.SendAsync(request, cancellationToken);
 
         await response.CheckAndHandleHttpErrorCodes(cancellationToken);
@@ -269,10 +269,11 @@ public class DiscogsApiClient
     }
     #endregion
 
+
     #region Database
     public async Task<Artist> GetArtistAsync(int artistId, CancellationToken cancellationToken)
     {
-        using var request = _authorizationProvider.CreateAuthorizedRequest(HttpMethod.Get, String.Format(DiscogApiUrls.ArtistsUrl, artistId));
+        using var request = _authorizationProvider.CreateAuthorizedRequest(HttpMethod.Get, String.Format(DiscogsApiUrls.ArtistsUrl, artistId));
         using var response = await _httpClient.SendAsync(request, cancellationToken);
 
         await response.CheckAndHandleHttpErrorCodes(cancellationToken);
@@ -284,7 +285,7 @@ public class DiscogsApiClient
 
     public async Task<ArtistReleasesResponse> GetArtistReleasesAsync(int artistId, int page, int pageSize, CancellationToken cancellationToken)
     {
-        string url = String.Format(DiscogApiUrls.ArtistReleasesUrl, artistId) + DiscogApiUrls.CreatePaginationQuery(page, pageSize);
+        string url = String.Format(DiscogsApiUrls.ArtistReleasesUrl, artistId) + "?" + DiscogsApiUrls.CreatePaginationQuery(page, pageSize);
 
         using var request = _authorizationProvider.CreateAuthorizedRequest(HttpMethod.Get, url);
         using var response = await _httpClient.SendAsync(request, cancellationToken);
@@ -299,7 +300,7 @@ public class DiscogsApiClient
 
     public async Task<MasterRelease> GetMasterReleaseAsync(int masterReleaseId, CancellationToken cancellationToken)
     {
-        using var request = _authorizationProvider.CreateAuthorizedRequest(HttpMethod.Get, String.Format(DiscogApiUrls.MasterReleasesUrl, masterReleaseId));
+        using var request = _authorizationProvider.CreateAuthorizedRequest(HttpMethod.Get, String.Format(DiscogsApiUrls.MasterReleasesUrl, masterReleaseId));
         using var response = await _httpClient.SendAsync(request, cancellationToken);
 
         await response.CheckAndHandleHttpErrorCodes(cancellationToken);
@@ -311,7 +312,7 @@ public class DiscogsApiClient
 
     public async Task<Release> GetReleaseAsync(int releaseId, CancellationToken cancellationToken)
     {
-        using var request = _authorizationProvider.CreateAuthorizedRequest(HttpMethod.Get, String.Format(DiscogApiUrls.ReleasesUrl, releaseId));
+        using var request = _authorizationProvider.CreateAuthorizedRequest(HttpMethod.Get, String.Format(DiscogsApiUrls.ReleasesUrl, releaseId));
         using var response = await _httpClient.SendAsync(request, cancellationToken);
 
         await response.CheckAndHandleHttpErrorCodes(cancellationToken);
@@ -323,7 +324,7 @@ public class DiscogsApiClient
 
     public async Task<ReleaseCommunityRatingResponse> GetReleaseCommunityRatingAsync(int releaseId, CancellationToken cancellationToken)
     {
-        using var request = _authorizationProvider.CreateAuthorizedRequest(HttpMethod.Get, String.Format(DiscogApiUrls.ReleaseCommunityRatingsUrl, releaseId));
+        using var request = _authorizationProvider.CreateAuthorizedRequest(HttpMethod.Get, String.Format(DiscogsApiUrls.ReleaseCommunityRatingsUrl, releaseId));
         using var response = await _httpClient.SendAsync(request, cancellationToken);
 
         await response.CheckAndHandleHttpErrorCodes(cancellationToken);
@@ -336,7 +337,7 @@ public class DiscogsApiClient
 
     public async Task<Label> GetLabelAsync(int labelId, CancellationToken cancellationToken)
     {
-        using var request = _authorizationProvider.CreateAuthorizedRequest(HttpMethod.Get, String.Format(DiscogApiUrls.LabelsUrl, labelId));
+        using var request = _authorizationProvider.CreateAuthorizedRequest(HttpMethod.Get, String.Format(DiscogsApiUrls.LabelsUrl, labelId));
         using var response = await _httpClient.SendAsync(request, cancellationToken);
 
         await response.CheckAndHandleHttpErrorCodes(cancellationToken);
@@ -348,7 +349,7 @@ public class DiscogsApiClient
 
     public async Task<LabelReleasesResponse> GetLabelReleasesAsync(int labelId, int page, int pageSize, CancellationToken cancellationToken)
     {
-        string url = String.Format(DiscogApiUrls.LabelReleasesUrl, labelId) + DiscogApiUrls.CreatePaginationQuery(page, pageSize);
+        string url = String.Format(DiscogsApiUrls.LabelReleasesUrl, labelId) + "?" + DiscogsApiUrls.CreatePaginationQuery(page, pageSize);
 
         using var request = _authorizationProvider.CreateAuthorizedRequest(HttpMethod.Get, url);
         using var response = await _httpClient.SendAsync(request, cancellationToken);
@@ -358,6 +359,22 @@ public class DiscogsApiClient
         var releasesResponse = await response.Content.DeserializeAsJsonAsync<LabelReleasesResponse>(cancellationToken);
 
         return releasesResponse;
+    }
+
+
+    public async Task<SearchResultsResponse> SearchDatabaseAsync(string query, int page, int pageSize, CancellationToken cancellationToken)
+    {
+        string url = $"{DiscogsApiUrls.SearchUrl}?q={query}{DiscogsApiUrls.CreatePaginationQuery(page, pageSize)}";
+
+        using var request = _authorizationProvider.CreateAuthorizedRequest(HttpMethod.Get, url);
+        using var response = await _httpClient.SendAsync(request, cancellationToken);
+
+        await response.CheckAndHandleHttpErrorCodes(cancellationToken);
+
+        var content = await response.Content.ReadAsStringAsync();
+        var searchResultsResponse = await response.Content.DeserializeAsJsonAsync<SearchResultsResponse>(cancellationToken);
+
+        return searchResultsResponse;
     }
     #endregion
 
