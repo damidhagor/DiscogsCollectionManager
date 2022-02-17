@@ -31,6 +31,4 @@ internal static class DiscogsApiUrls
     public static readonly string LabelReleasesUrl = $"{BaseUrl}/labels/{{0}}/releases";
 
     public static readonly string SearchUrl= $"{BaseUrl}/database/search";
-
-    public static string CreatePaginationQuery(int page, int perPage) => $"?page={Math.Max(1, page)}&per_page={Math.Clamp(perPage, 1, 100)}";
 }

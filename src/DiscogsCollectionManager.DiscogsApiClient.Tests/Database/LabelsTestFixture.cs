@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using DiscogsCollectionManager.DiscogsApiClient.Exceptions;
+using DiscogsCollectionManager.DiscogsApiClient.QueryParameters;
 using NUnit.Framework;
 
 namespace DiscogsCollectionManager.DiscogsApiClient.Tests.Database;
@@ -43,8 +44,9 @@ public class LabelsTestFixture : ApiBaseTestFixture
     public async Task GetLabelReleases_Success()
     {
         var labelId = 11499;
+        var paginationParams = new PaginationQueryParameters(1, 50);
 
-        var response = await ApiClient.GetLabelReleasesAsync(labelId, 1, 50, default);
+        var response = await ApiClient.GetLabelReleasesAsync(labelId, paginationParams, default);
 
         Assert.IsNotNull(response.Pagination);
         Assert.AreEqual(1, response.Pagination.Page);
@@ -63,8 +65,9 @@ public class LabelsTestFixture : ApiBaseTestFixture
     public async Task GetLabelReleases_Success_InvalidSmallPageNumber()
     {
         var labelId = 11499;
+        var paginationParams = new PaginationQueryParameters(-1, 50);
 
-        var response = await ApiClient.GetLabelReleasesAsync(labelId, -1, 50, default);
+        var response = await ApiClient.GetLabelReleasesAsync(labelId, paginationParams, default);
 
         Assert.IsNotNull(response.Pagination);
         Assert.AreEqual(1, response.Pagination.Page);
@@ -83,8 +86,9 @@ public class LabelsTestFixture : ApiBaseTestFixture
     public async Task GetLabelReleases_Success_InvalidSmallPageSize()
     {
         var labelId = 11499;
+        var paginationParams = new PaginationQueryParameters(1, -1);
 
-        var response = await ApiClient.GetLabelReleasesAsync(labelId, 1, -1, default);
+        var response = await ApiClient.GetLabelReleasesAsync(labelId, paginationParams, default);
 
         Assert.IsNotNull(response.Pagination);
         Assert.AreEqual(1, response.Pagination.Page);
@@ -103,8 +107,9 @@ public class LabelsTestFixture : ApiBaseTestFixture
     public async Task GetLabelReleases_Success_InvalidBigPageSize()
     {
         var labelId = 11499;
+        var paginationParams = new PaginationQueryParameters(1, int.MaxValue);
 
-        var response = await ApiClient.GetLabelReleasesAsync(labelId, 1, 9999999, default);
+        var response = await ApiClient.GetLabelReleasesAsync(labelId, paginationParams, default);
 
         Assert.IsNotNull(response.Pagination);
         Assert.AreEqual(1, response.Pagination.Page);
@@ -124,16 +129,18 @@ public class LabelsTestFixture : ApiBaseTestFixture
     {
         var labelId = 34650;
 
+        var paginationParams = new PaginationQueryParameters(1, 50);
         var itemCount = 0;
         var summedUpItemCount = 0;
 
-        var response = await ApiClient.GetLabelReleasesAsync(labelId, 1, 50, default);
+        var response = await ApiClient.GetLabelReleasesAsync(labelId, paginationParams, default);
         itemCount = response.Pagination.Items;
         summedUpItemCount += response.Releases.Count;
 
         for (int p = 2; p <= response.Pagination.Pages; p++)
         {
-            response = await ApiClient.GetLabelReleasesAsync(labelId, p, 50, default);
+            paginationParams.Page = p;
+            response = await ApiClient.GetLabelReleasesAsync(labelId, paginationParams, default);
             summedUpItemCount += response.Releases.Count;
         }
 
@@ -144,15 +151,17 @@ public class LabelsTestFixture : ApiBaseTestFixture
     public void GetLabelReleases_NotExistingLabelId()
     {
         var labelId = -1;
+        var paginationParams = new PaginationQueryParameters(1, 50);
 
-        Assert.ThrowsAsync<ResourceNotFoundDiscogsException>(() => ApiClient.GetLabelReleasesAsync(labelId, 1, 50, default));
+        Assert.ThrowsAsync<ResourceNotFoundDiscogsException>(() => ApiClient.GetLabelReleasesAsync(labelId, paginationParams, default));
     }
 
     [Test]
     public void GetLabelReleases_InvalidBigPageNumber()
     {
         var labelId = 11499;
+        var paginationParams = new PaginationQueryParameters(int.MaxValue, 50);
 
-        Assert.ThrowsAsync<ResourceNotFoundDiscogsException>(() => ApiClient.GetLabelReleasesAsync(labelId, 9999999, 50, default));
+        Assert.ThrowsAsync<ResourceNotFoundDiscogsException>(() => ApiClient.GetLabelReleasesAsync(labelId, paginationParams, default));
     }
 }

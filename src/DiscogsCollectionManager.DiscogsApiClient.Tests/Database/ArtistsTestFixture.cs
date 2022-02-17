@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using DiscogsCollectionManager.DiscogsApiClient.Exceptions;
+using DiscogsCollectionManager.DiscogsApiClient.QueryParameters;
 using NUnit.Framework;
 
 namespace DiscogsCollectionManager.DiscogsApiClient.Tests.Database;
@@ -40,8 +41,9 @@ public class ArtistsTestFixture : ApiBaseTestFixture
     public async Task GetArtistReleases_Success()
     {
         var artistId = 287459;
+        var paginationParams = new PaginationQueryParameters(1, 50);
 
-        var response = await ApiClient.GetArtistReleasesAsync(artistId, 1, 50, default);
+        var response = await ApiClient.GetArtistReleasesAsync(artistId, paginationParams, default);
 
         Assert.IsNotNull(response.Pagination);
         Assert.AreEqual(1, response.Pagination.Page);
@@ -60,8 +62,9 @@ public class ArtistsTestFixture : ApiBaseTestFixture
     public async Task GetArtistReleases_Success_InvalidSmallPageNumber()
     {
         var artistId = 287459;
+        var paginationParams = new PaginationQueryParameters(-1, 50);
 
-        var response = await ApiClient.GetArtistReleasesAsync(artistId, -1, 50, default);
+        var response = await ApiClient.GetArtistReleasesAsync(artistId, paginationParams, default);
 
         Assert.IsNotNull(response.Pagination);
         Assert.AreEqual(1, response.Pagination.Page);
@@ -80,8 +83,9 @@ public class ArtistsTestFixture : ApiBaseTestFixture
     public async Task GetArtistReleases_Success_InvalidSmallPageSize()
     {
         var artistId = 287459;
+        var paginationParams = new PaginationQueryParameters(1, -1);
 
-        var response = await ApiClient.GetArtistReleasesAsync(artistId, 1, -1, default);
+        var response = await ApiClient.GetArtistReleasesAsync(artistId, paginationParams, default);
 
         Assert.IsNotNull(response.Pagination);
         Assert.AreEqual(1, response.Pagination.Page);
@@ -100,8 +104,9 @@ public class ArtistsTestFixture : ApiBaseTestFixture
     public async Task GetArtistReleases_Success_InvalidBigPageSize()
     {
         var artistId = 287459;
+        var paginationParams = new PaginationQueryParameters(1, int.MaxValue);
 
-        var response = await ApiClient.GetArtistReleasesAsync(artistId, 1, 9999999, default);
+        var response = await ApiClient.GetArtistReleasesAsync(artistId, paginationParams, default);
 
         Assert.IsNotNull(response.Pagination);
         Assert.AreEqual(1, response.Pagination.Page);
@@ -121,16 +126,18 @@ public class ArtistsTestFixture : ApiBaseTestFixture
     {
         var artistId = 287459;
 
+        var paginationParams = new PaginationQueryParameters(1, 50);
         var itemCount = 0;
         var summedUpItemCount = 0;
 
-        var response = await ApiClient.GetArtistReleasesAsync(artistId, 1, 50, default);
+        var response = await ApiClient.GetArtistReleasesAsync(artistId, paginationParams, default);
         itemCount = response.Pagination.Items;
         summedUpItemCount += response.Releases.Count;
 
         for (int p = 2; p <= response.Pagination.Pages; p++)
         {
-            response = await ApiClient.GetArtistReleasesAsync(artistId, p, 50, default);
+            paginationParams.Page = p;
+            response = await ApiClient.GetArtistReleasesAsync(artistId, paginationParams, default);
             summedUpItemCount += response.Releases.Count;
         }
 
@@ -141,15 +148,17 @@ public class ArtistsTestFixture : ApiBaseTestFixture
     public void GetArtistReleases_NotExistingArtistId()
     {
         var artistId = -1;
+        var paginationParams = new PaginationQueryParameters(1, 50);
 
-        Assert.ThrowsAsync<ResourceNotFoundDiscogsException>(() => ApiClient.GetArtistReleasesAsync(artistId, 1, 50, default));
+        Assert.ThrowsAsync<ResourceNotFoundDiscogsException>(() => ApiClient.GetArtistReleasesAsync(artistId, paginationParams, default));
     }
 
     [Test]
     public void GetArtistReleases_InvalidBigPageNumber()
     {
         var artistId = 287459;
+        var paginationParams = new PaginationQueryParameters(int.MaxValue, 50);
 
-        Assert.ThrowsAsync<ResourceNotFoundDiscogsException>(() => ApiClient.GetArtistReleasesAsync(artistId, 9999999, 50, default));
+        Assert.ThrowsAsync<ResourceNotFoundDiscogsException>(() => ApiClient.GetArtistReleasesAsync(artistId, paginationParams, default));
     }
 }

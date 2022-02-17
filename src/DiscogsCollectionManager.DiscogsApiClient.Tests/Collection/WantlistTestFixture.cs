@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using DiscogsCollectionManager.DiscogsApiClient.Exceptions;
+using DiscogsCollectionManager.DiscogsApiClient.QueryParameters;
 using NUnit.Framework;
 
 namespace DiscogsCollectionManager.DiscogsApiClient.Tests.Collection;
@@ -11,16 +12,18 @@ public class WantlistTestFixture : ApiBaseTestFixture
     public async Task GetAllWantlistReleases_Success()
     {
         var username = "damidhagor";
+        var paginationParams = new PaginationQueryParameters(1, 50);
         var itemCount = 0;
         var summedUpItemCount = 0;
 
-        var response = await ApiClient.GetWantlistReleasesAsync(username, 1, 50, default);
+        var response = await ApiClient.GetWantlistReleasesAsync(username, paginationParams, default);
         itemCount = response.Pagination.Items;
         summedUpItemCount += response.Wants.Count;
 
         for (int p = 2; p <= response.Pagination.Pages; p++)
         {
-            response = await ApiClient.GetWantlistReleasesAsync(username, 1, 50, default);
+            paginationParams.Page = p;
+            response = await ApiClient.GetWantlistReleasesAsync(username, paginationParams, default);
             summedUpItemCount += response.Wants.Count;
         }
 
@@ -31,16 +34,18 @@ public class WantlistTestFixture : ApiBaseTestFixture
     public void GetWantlist_EmptyUsername()
     {
         var username = "";
+        var paginationParams = new PaginationQueryParameters(1, 50);
 
-        Assert.ThrowsAsync<ArgumentException>(() => ApiClient.GetWantlistReleasesAsync(username, 1, 50, default), "username");
+        Assert.ThrowsAsync<ArgumentException>(() => ApiClient.GetWantlistReleasesAsync(username, paginationParams, default), "username");
     }
 
     [Test]
     public void GetWantlist_InvalidUsername()
     {
         var username = "awrbaerhnqw54";
+        var paginationParams = new PaginationQueryParameters(1, 50);
 
-        Assert.ThrowsAsync<ResourceNotFoundDiscogsException>(() => ApiClient.GetWantlistReleasesAsync(username, 1, 50, default));
+        Assert.ThrowsAsync<ResourceNotFoundDiscogsException>(() => ApiClient.GetWantlistReleasesAsync(username, paginationParams, default));
     }
 
 

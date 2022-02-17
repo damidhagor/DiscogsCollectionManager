@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using DiscogsCollectionManager.DiscogsApiClient.QueryParameters;
 using NUnit.Framework;
 
 namespace DiscogsCollectionManager.DiscogsApiClient.Tests.Database;
@@ -10,8 +11,9 @@ public class SearchTestFixture : ApiBaseTestFixture
     public async Task Search_Success()
     {
         var query = "hammerfall";
+        var paginationParams = new PaginationQueryParameters(1, 50);
 
-        var response = await ApiClient.SearchDatabaseAsync(query, 1, 50, default);
+        var response = await ApiClient.SearchDatabaseAsync(query, paginationParams, default);
 
         Assert.IsNotNull(response);
         Assert.IsNotNull(response.Pagination);
@@ -28,8 +30,9 @@ public class SearchTestFixture : ApiBaseTestFixture
     public async Task Search_NoQuery_Success()
     {
         var query = "";
+        var paginationParams = new PaginationQueryParameters(1, 50);
 
-        var response = await ApiClient.SearchDatabaseAsync(query, 1, 50, default);
+        var response = await ApiClient.SearchDatabaseAsync(query, paginationParams, default);
 
         Assert.IsNotNull(response);
         Assert.IsNotNull(response.Pagination);
@@ -47,8 +50,9 @@ public class SearchTestFixture : ApiBaseTestFixture
     public async Task Search_Success_InvalidSmallPageNumber()
     {
         var query = "hammerfall";
+        var paginationParams = new PaginationQueryParameters(-1, 50);
 
-        var response = await ApiClient.SearchDatabaseAsync(query, -1, 50, default);
+        var response = await ApiClient.SearchDatabaseAsync(query, paginationParams, default);
 
         Assert.IsNotNull(response.Pagination);
         Assert.AreEqual(1, response.Pagination.Page);
@@ -65,8 +69,9 @@ public class SearchTestFixture : ApiBaseTestFixture
     public async Task Search_Success_InvalidSmallPageSize()
     {
         var query = "hammerfall";
+        var paginationParams = new PaginationQueryParameters(1, -1);
 
-        var response = await ApiClient.SearchDatabaseAsync(query, 1, -1, default);
+        var response = await ApiClient.SearchDatabaseAsync(query, paginationParams, default);
 
         Assert.IsNotNull(response.Pagination);
         Assert.AreEqual(1, response.Pagination.Page);
@@ -83,8 +88,9 @@ public class SearchTestFixture : ApiBaseTestFixture
     public async Task Search_Success_InvalidBigPageSize()
     {
         var query = "hammerfall";
+        var paginationParams = new PaginationQueryParameters(1, int.MaxValue);
 
-        var response = await ApiClient.SearchDatabaseAsync(query, 1, 9999999, default);
+        var response = await ApiClient.SearchDatabaseAsync(query, paginationParams, default);
 
         Assert.IsNotNull(response.Pagination);
         Assert.AreEqual(1, response.Pagination.Page);
@@ -92,8 +98,8 @@ public class SearchTestFixture : ApiBaseTestFixture
         Assert.Less(0, response.Pagination.Items);
         Assert.Less(0, response.Pagination.Pages);
         Assert.IsNotNull(response.Pagination.Urls);
-        Assert.IsTrue(String.IsNullOrWhiteSpace(response.Pagination.Urls.Next));
-        Assert.IsTrue(String.IsNullOrWhiteSpace(response.Pagination.Urls.Last));
-        Assert.Greater(100, response.Results.Count);
+        Assert.IsFalse(String.IsNullOrWhiteSpace(response.Pagination.Urls.Next));
+        Assert.IsFalse(String.IsNullOrWhiteSpace(response.Pagination.Urls.Last));
+        Assert.AreEqual(100, response.Results.Count);
     }
 }
