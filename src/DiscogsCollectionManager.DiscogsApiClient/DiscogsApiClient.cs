@@ -225,7 +225,7 @@ public class DiscogsApiClient
         if (String.IsNullOrWhiteSpace(username))
             throw new ArgumentException(nameof(username));
 
-        string url = QueryParameterHelper.AppendPaginationQueryParameters(String.Format(DiscogsApiUrls.WantlistUrl, username), paginationQueryParameters);
+        string url = QueryParameterHelper.AppendPaginationQuery(String.Format(DiscogsApiUrls.WantlistUrl, username), paginationQueryParameters);
 
         using var request = _authorizationProvider.CreateAuthorizedRequest(HttpMethod.Get, url);
         using var response = await _httpClient.SendAsync(request, cancellationToken);
@@ -286,7 +286,7 @@ public class DiscogsApiClient
 
     public async Task<ArtistReleasesResponse> GetArtistReleasesAsync(int artistId, PaginationQueryParameters paginationQueryParameters, CancellationToken cancellationToken)
     {
-        string url = QueryParameterHelper.AppendPaginationQueryParameters(String.Format(DiscogsApiUrls.ArtistReleasesUrl, artistId), paginationQueryParameters);
+        string url = QueryParameterHelper.AppendPaginationQuery(String.Format(DiscogsApiUrls.ArtistReleasesUrl, artistId), paginationQueryParameters);
 
         using var request = _authorizationProvider.CreateAuthorizedRequest(HttpMethod.Get, url);
         using var response = await _httpClient.SendAsync(request, cancellationToken);
@@ -350,7 +350,7 @@ public class DiscogsApiClient
 
     public async Task<LabelReleasesResponse> GetLabelReleasesAsync(int labelId, PaginationQueryParameters paginationQueryParameters, CancellationToken cancellationToken)
     {
-        string url = QueryParameterHelper.AppendPaginationQueryParameters(String.Format(DiscogsApiUrls.LabelReleasesUrl, labelId), paginationQueryParameters);
+        string url = QueryParameterHelper.AppendPaginationQuery(String.Format(DiscogsApiUrls.LabelReleasesUrl, labelId), paginationQueryParameters);
 
         using var request = _authorizationProvider.CreateAuthorizedRequest(HttpMethod.Get, url);
         using var response = await _httpClient.SendAsync(request, cancellationToken);
@@ -363,9 +363,9 @@ public class DiscogsApiClient
     }
 
 
-    public async Task<SearchResultsResponse> SearchDatabaseAsync(string query, PaginationQueryParameters paginationQueryParameters, CancellationToken cancellationToken)
+    public async Task<SearchResultsResponse> SearchDatabaseAsync(SearchQueryParameters searchQueryParameters, PaginationQueryParameters paginationQueryParameters, CancellationToken cancellationToken)
     {
-        string url = $"{DiscogsApiUrls.SearchUrl}?q={query}&{paginationQueryParameters.CreateQueryParameterString()}";
+        string url = QueryParameterHelper.AppendSearchQueryWithPagination(DiscogsApiUrls.SearchUrl, searchQueryParameters, paginationQueryParameters);
 
         using var request = _authorizationProvider.CreateAuthorizedRequest(HttpMethod.Get, url);
         using var response = await _httpClient.SendAsync(request, cancellationToken);

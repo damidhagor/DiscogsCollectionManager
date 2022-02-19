@@ -10,10 +10,10 @@ public class SearchTestFixture : ApiBaseTestFixture
     [Test]
     public async Task Search_Success()
     {
-        var query = "hammerfall";
+        var queryParams = new SearchQueryParameters { Query = "hammerfall" };
         var paginationParams = new PaginationQueryParameters(1, 50);
 
-        var response = await ApiClient.SearchDatabaseAsync(query, paginationParams, default);
+        var response = await ApiClient.SearchDatabaseAsync(queryParams, paginationParams, default);
 
         Assert.IsNotNull(response);
         Assert.IsNotNull(response.Pagination);
@@ -29,10 +29,10 @@ public class SearchTestFixture : ApiBaseTestFixture
     [Test]
     public async Task Search_NoQuery_Success()
     {
-        var query = "";
+        var queryParams = new SearchQueryParameters();
         var paginationParams = new PaginationQueryParameters(1, 50);
 
-        var response = await ApiClient.SearchDatabaseAsync(query, paginationParams, default);
+        var response = await ApiClient.SearchDatabaseAsync(queryParams, paginationParams, default);
 
         Assert.IsNotNull(response);
         Assert.IsNotNull(response.Pagination);
@@ -49,10 +49,10 @@ public class SearchTestFixture : ApiBaseTestFixture
     [Test]
     public async Task Search_Success_InvalidSmallPageNumber()
     {
-        var query = "hammerfall";
+        var queryParams = new SearchQueryParameters { Query = "hammerfall" };
         var paginationParams = new PaginationQueryParameters(-1, 50);
 
-        var response = await ApiClient.SearchDatabaseAsync(query, paginationParams, default);
+        var response = await ApiClient.SearchDatabaseAsync(queryParams, paginationParams, default);
 
         Assert.IsNotNull(response.Pagination);
         Assert.AreEqual(1, response.Pagination.Page);
@@ -68,10 +68,10 @@ public class SearchTestFixture : ApiBaseTestFixture
     [Test]
     public async Task Search_Success_InvalidSmallPageSize()
     {
-        var query = "hammerfall";
+        var queryParams = new SearchQueryParameters { Query = "hammerfall" };
         var paginationParams = new PaginationQueryParameters(1, -1);
 
-        var response = await ApiClient.SearchDatabaseAsync(query, paginationParams, default);
+        var response = await ApiClient.SearchDatabaseAsync(queryParams, paginationParams, default);
 
         Assert.IsNotNull(response.Pagination);
         Assert.AreEqual(1, response.Pagination.Page);
@@ -87,10 +87,10 @@ public class SearchTestFixture : ApiBaseTestFixture
     [Test]
     public async Task Search_Success_InvalidBigPageSize()
     {
-        var query = "hammerfall";
+        var queryParams = new SearchQueryParameters { Query = "hammerfall" };
         var paginationParams = new PaginationQueryParameters(1, int.MaxValue);
 
-        var response = await ApiClient.SearchDatabaseAsync(query, paginationParams, default);
+        var response = await ApiClient.SearchDatabaseAsync(queryParams, paginationParams, default);
 
         Assert.IsNotNull(response.Pagination);
         Assert.AreEqual(1, response.Pagination.Page);
